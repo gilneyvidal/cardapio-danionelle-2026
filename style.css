@@ -1,0 +1,420 @@
+/* style.css */
+/* ===========================
+   TIPOGRAFIA PERSONALIZADA (OPCIONAL)
+=========================== */
+@font-face {
+  font-family: "Dolato de Stato";
+  src: url("fonts/Dolato de Stato Font.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* ===========================
+   RESET E CONFIGURAÇÕES GLOBAIS
+=========================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Calibri", Arial, sans-serif;
+  background: linear-gradient(
+      rgba(215, 238, 252, 0.85),
+      rgba(194, 222, 246, 0.9)
+    ),
+    url("images/background-gelo.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #24415c;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.page-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ===========================
+   CABEÇALHO
+=========================== */
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 20px 30px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(5px);
+}
+
+.logo-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.header-text {
+  flex: 1;
+}
+
+.header-text h1 {
+  font-family: "Dolato de Stato", "Calibri", Arial, sans-serif;
+  font-size: 2.5rem;
+  color: #143550;
+  margin-bottom: 4px;
+}
+
+.header-text p {
+  font-size: 1rem;
+  color: #2d587e;
+}
+
+.header-info {
+  font-size: 0.9rem;
+}
+
+/* ===========================
+   LAYOUT PRINCIPAL (GRID)
+=========================== */
+.main-content {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-family: "Dolato de Stato", "Calibri", Arial, sans-serif;
+  font-size: 2rem;
+  color: #143550;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #ff8ec9;
+}
+
+/* ===========================
+   ÁREA DO CARDÁPIO
+=========================== */
+.menu-area {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.menu-section {
+  margin-bottom: 28px;
+}
+
+.menu-section h2 {
+  font-family: "Dolato de Stato", "Calibri", Arial, sans-serif;
+  font-size: 1.6rem;
+  color: #143550;
+  margin-bottom: 14px;
+  padding-left: 14px;
+  border-left: 5px solid #ff8ec9;
+}
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.item-name {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #24415c;
+}
+
+.item-price {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ff5fa6;
+  min-width: 80px;
+  text-align: right;
+}
+
+.btn-add {
+  background: linear-gradient(135deg, #ff5fa6 0%, #ff3390 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-add:hover {
+  background: linear-gradient(135deg, #ff3390 0%, #ff157e 100%);
+  transform: scale(1.05);
+}
+
+/* ===========================
+   ÁREA DO PEDIDO (CARRINHO + FORMULÁRIO)
+=========================== */
+.order-area {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(8px);
+}
+
+.cart-section {
+  margin-bottom: 24px;
+}
+
+.cart-title .section-title {
+  margin-bottom: 16px;
+}
+
+#carrinho-container {
+  min-height: 100px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.cart-row {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.cart-item-name {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #24415c;
+}
+
+.cart-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cart-btn {
+  background: #ff5fa6;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  width: 26px;
+  height: 26px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-btn:hover {
+  background: #ff3390;
+}
+
+.cart-qty {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #24415c;
+  min-width: 26px;
+  text-align: center;
+}
+
+.cart-subtotal {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #ff5fa6;
+  min-width: 80px;
+  text-align: right;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 2px 4px;
+  border-top: 3px solid #ff8ec9;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #143550;
+}
+
+/* ===========================
+   FORMULÁRIO DE PEDIDO
+=========================== */
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.order-form label {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #143550;
+  margin-bottom: 4px;
+}
+
+.label-help {
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: #5378a1;
+}
+
+.order-form input,
+.order-form select,
+.order-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #c3d6eb;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: "Calibri", Arial, sans-serif;
+  color: #24415c;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-form input:focus,
+.order-form select:focus,
+.order-form textarea:focus {
+  outline: none;
+  border-color: #ff5fa6;
+  box-shadow: 0 0 0 2px rgba(255, 95, 166, 0.2);
+}
+
+.order-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #143550 0%, #0c2134 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 6px;
+}
+
+.btn-submit:hover {
+  background: linear-gradient(135deg, #0c2134 0%, #071421 100%);
+  transform: scale(1.02);
+}
+
+/* ===========================
+   RODAPÉ
+=========================== */
+.footer {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  color: #143550;
+  backdrop-filter: blur(8px);
+}
+
+.footer p {
+  margin: 4px 0;
+}
+
+.footer hr {
+  border: none;
+  border-top: 2px solid #ff8ec9;
+  margin: 12px 0;
+}
+
+/* ===========================
+   RESPONSIVIDADE - MOBILE
+=========================== */
+@media (max-width: 900px) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .page-wrapper {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .logo-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .main-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-add {
+    width: 100%;
+  }
+
+  .cart-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-controls {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cart-subtotal {
+    width: 100%;
+    text-align: center;
+  }
+}
