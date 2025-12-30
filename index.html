@@ -1,0 +1,141 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cardápio Digital - Sorvetes Danionelle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- CABEÇALHO -->
+    <header class="header">
+      <!-- Coloque o logo real em /images e ajuste o nome do arquivo abaixo -->
+      <img
+        src="images/logo-danionelle.png"
+        alt="Sorvetes Danionelle"
+        class="logo-img"
+      />
+      <div class="header-text">
+        <h1>Sorvetes Danionelle</h1>
+        <p>Cardápio digital para pedidos via WhatsApp</p>
+        <p class="header-info">
+          Distribuidora: Alameda Fernando Costa, 481 – Jardim Imperador – Suzano – SP
+        </p>
+        <p class="header-info">
+          Tel: (11) 4746-4394 · (11) 4759-1999
+        </p>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL: CARDÁPIO + PEDIDO -->
+    <main class="main-content">
+      <!-- LADO ESQUERDO: CARDÁPIO -->
+      <section class="menu-area">
+        <h2 class="section-title">Nosso Cardápio</h2>
+        <div id="menu-container"></div>
+      </section>
+
+      <!-- LADO DIREITO: CARRINHO + FORMULÁRIO -->
+      <section class="order-area">
+        <!-- CARRINHO -->
+        <section class="cart-section">
+          <div class="cart-title">
+            <h2 class="section-title">Seu Pedido</h2>
+          </div>
+          <div id="carrinho-container"></div>
+
+          <div class="cart-total">
+            <span>Total:</span>
+            <span id="total">R$ 0,00</span>
+          </div>
+        </section>
+
+        <!-- FORMULÁRIO DE DADOS DO CLIENTE -->
+        <form class="order-form">
+          <div>
+            <label for="nome">Seu nome:</label>
+            <input
+              type="text"
+              id="nome"
+              placeholder="Digite seu nome"
+              autocomplete="name"
+            />
+          </div>
+
+          <div>
+            <label for="tipo-atendimento">Como você quer receber?</label>
+            <select id="tipo-atendimento">
+              <option value="">Selecione...</option>
+              <option value="Retirar na loja">Retirar na loja</option>
+              <option value="Entrega (distribuidora/fábrica)">Entrega (distribuidora / fábrica)</option>
+              <option value="Atacado / revenda">Atacado / revenda</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="endereco">
+              Endereço / ponto de referência
+              <span class="label-help">(preencher se for entrega)</span>
+            </label>
+            <input
+              type="text"
+              id="endereco"
+              placeholder="Rua, número, bairro, referência..."
+              autocomplete="street-address"
+            />
+          </div>
+
+          <div>
+            <label for="pagamento">Forma de pagamento:</label>
+            <select id="pagamento">
+              <option value="">Selecione...</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Débito">Débito</option>
+              <option value="Crédito">Crédito</option>
+              <option value="PIX">PIX</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="observacoes">Observações (opcional):</label>
+            <textarea
+              id="observacoes"
+              placeholder="Sabores na mesma caixa, trocas, pontos de atenção do endereço, etc."
+            ></textarea>
+          </div>
+
+          <button id="btn-enviar" class="btn-submit">
+            Enviar Pedido via WhatsApp
+          </button>
+        </form>
+      </section>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="footer">
+      <p><strong>Sorvetes Danionelle</strong></p>
+      <p>DISTRIBUIDORA – Alameda Fernando Costa, 481 – Jardim Imperador – Suzano – SP</p>
+      <p>
+        Horário de atendimento distribuidora:
+        Segunda a Sábado: 08h às 18h · Domingos e Feriados: 08h às 14h
+      </p>
+      <p>
+        Serviço de entrega / fábrica: Segunda a Sexta: 08h às 18h
+      </p>
+
+      <hr />
+
+      <p>
+        Desenvolvido por <strong>Vidal Design Solutions</strong> · Contato:
+        <a href="https://wa.me/5511968649673" target="_blank" rel="noopener noreferrer">
+          +55 11 96864-9673
+        </a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
