@@ -10,37 +10,27 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 @media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } }
 
 .menu-wrapper, .cart-wrapper { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.section-title { font-size: 1.2rem; margin-bottom: 10px; }
+.section-subtitle { font-size: 0.85rem; margin-bottom: 10px; color: #555; }
 .menu-section { margin-bottom: 15px; border: 1px solid #ffd1ec; border-radius: 8px; padding: 10px; }
-.item { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 5px 0; align-items: center; }
-.btn-add { background: #ff5fa6; color: #fff; border: none; padding: 5px 10px; border-radius: 15px; cursor: pointer; }
+.menu-section h3 { font-size: 1rem; margin-bottom: 8px; color: #ff5fa6; }
+.item { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 5px 0; align-items: center; font-size: 0.9rem; }
+.btn-add { background: #ff5fa6; color: #fff; border: none; padding: 5px 10px; border-radius: 15px; cursor: pointer; font-size: 0.85rem; }
+.btn-add:hover { background: #e04a8f; }
 
 .carrinho-container { max-height: 200px; overflow-y: auto; margin-bottom: 10px; }
-.cart-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 5px; background: #f7fbff; margin-bottom: 4px; font-size: 0.9rem; }
-.cart-total-row { font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; display: flex; justify-content: space-between; }
+.cart-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 5px; background: #f7fbff; margin-bottom: 4px; font-size: 0.9rem; border-radius: 4px; align-items: center; }
+.cart-row button { background: #143550; color: #fff; border: none; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+.cart-row button:hover { background: #0d2538; }
+.cart-total-row { font-weight: bold; border-top: 2px solid #ff5fa6; padding-top: 10px; display: flex; justify-content: space-between; font-size: 1rem; }
 
 .pedido-form { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-.pedido-form label { font-size: 0.8rem; font-weight: bold; }
-.pedido-form input, .pedido-form select, .pedido-form textarea { padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+.pedido-form label { font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
+.pedido-form input, .pedido-form select, .pedido-form textarea { padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 0.9rem; }
 
 /* ESTILO PAGAMENTO MULTI */
 .pagamento-multi-box { background: #fdf8ff; border: 1px solid #ffd1ec; padding: 10px; border-radius: 8px; }
 .pagamento-inputs { display: flex; gap: 5px; margin-bottom: 8px; }
-.pagamento-inputs select { flex: 2; }
-.pagamento-inputs input { flex: 2; }
-.btn-small { flex: 0.5; background: #143550; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-.lista-pagamentos { font-size: 0.85rem; }
-.pagamento-item { display: flex; justify-content: space-between; background: #fff; padding: 3px 8px; border-radius: 4px; margin-bottom: 3px; border: 1px solid #eee; }
-.btn-del { color: red; cursor: pointer; font-weight: bold; margin-left: 10px; }
-
-.buttons-row { display: flex; gap: 10px; margin-top: 10px; }
-.btn-whatsapp { background: #25d366; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; }
-.btn-print { background: #6c757d; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; }
-
-/* RECIBO 58mm */
-.recibo { display: none; width: 58mm; font-family: monospace; font-size: 10px; }
-@media print {
-  body * { visibility: hidden; }
-  #recibo, #recibo * { visibility: visible; }
-  #recibo { display: block; position: absolute; left: 0; top: 0; width: 58mm; padding: 2mm; }
-  .header, .main-container, .footer { display: none !important; }
-}
+.pagamento-inputs select { flex: 2; font-size: 0.85rem; }
+.pagamento-inputs input { flex: 2; font-size: 0.85rem; }
+.btn-small { flex: 0.5; background: #143
