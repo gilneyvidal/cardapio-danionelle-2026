@@ -33,4 +33,33 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 .pagamento-inputs { display: flex; gap: 5px; margin-bottom: 8px; }
 .pagamento-inputs select { flex: 2; font-size: 0.85rem; }
 .pagamento-inputs input { flex: 2; font-size: 0.85rem; }
-.btn-small { flex: 0.5; background: #143
+.btn-small { flex: 0.5; background: #143550; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+.btn-small:hover { background: #0d2538; }
+.lista-pagamentos { font-size: 0.85rem; }
+.pagamento-item { display: flex; justify-content: space-between; background: #fff; padding: 5px 8px; border-radius: 4px; margin-bottom: 3px; border: 1px solid #eee; }
+.btn-del { color: red; cursor: pointer; font-weight: bold; margin-left: 10px; }
+.btn-del:hover { color: darkred; }
+.pagamento-resumo { margin-top: 8px; padding: 5px; background: #e8f4ff; border-radius: 4px; font-weight: bold; font-size: 0.85rem; text-align: center; }
+
+.buttons-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.btn-whatsapp { background: #25d366; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.9rem; }
+.btn-whatsapp:hover { background: #1ebe57; }
+.btn-print { background: #6c757d; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.9rem; }
+.btn-print:hover { background: #5a6268; }
+.btn-novo { background: #ff5fa6; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.9rem; }
+.btn-novo:hover { background: #e04a8f; }
+
+/* RECIBO 58mm */
+.recibo { display: none; width: 58mm; font-family: monospace; font-size: 10px; padding: 2mm; }
+.recibo-header h2 { font-size: 12px; text-align: center; margin-bottom: 2px; }
+.recibo-header p { text-align: center; margin: 1px 0; }
+.recibo-cliente p, .recibo-itens p, .recibo-pagamentos p, .recibo-total p, .recibo-rodape p { margin: 2px 0; }
+.recibo-rodape { text-align: center; margin-top: 5px; }
+
+@media print {
+  @page { margin: 0; }
+  body * { visibility: hidden; }
+  #recibo, #recibo * { visibility: visible; }
+  #recibo { display: block; position: absolute; left: 0; top: 0; width: 58mm; padding: 2mm; }
+  .header, .main-container { display: none !important; }
+}
