@@ -1,11 +1,3 @@
-// ===========================
-// CARDÁPIO SORVETES DANIONELLE
-// ===========================
-// Regra de preço automática por item:
-// - 1 a 4 unidades: preço VAREJO
-// - 5 ou mais unidades: preço ATACADO
-// Valores fictícios para apresentação (ajuste depois se quiser).
-
 const menuData = [
   {
     categoria: "Picolés DanMilk",
@@ -131,14 +123,13 @@ const menuData = [
   }
 ];
 
-// ESTADO
 let carrinho = [];
 let pagamentos = [];
 
-// AUXILIARES
 function formatarValor(v) {
   return `R$ ${v.toFixed(2).replace(".", ",")}`;
 }
+
 function buscarProduto(nome) {
   for (const cat of menuData) {
     const prod = cat.itens.find(i => i.nome === nome);
@@ -146,11 +137,13 @@ function buscarProduto(nome) {
   }
   return null;
 }
+
 function precoUnitario(nome, qtde) {
   const prod = buscarProduto(nome);
   if (!prod) return 0;
   return qtde >= 5 ? prod.precoAtacado : prod.precoVarejo;
 }
+
 function calcularTotalPedido() {
   let total = 0;
   carrinho.forEach(item => {
@@ -159,11 +152,11 @@ function calcularTotalPedido() {
   });
   return total;
 }
+
 function calcularTotalPagamentos() {
   return pagamentos.reduce((soma, p) => soma + p.valor, 0);
 }
 
-// MENU
 function renderMenu() {
   const container = document.getElementById("menu-container");
   container.innerHTML = "";
@@ -185,13 +178,13 @@ function renderMenu() {
   });
 }
 
-// CARRINHO
 window.addCarrinho = (nome) => {
   const exist = carrinho.find(i => i.nome === nome);
   if (exist) exist.quantidade++;
   else carrinho.push({ nome, quantidade: 1 });
   renderCarrinho();
 };
+
 window.mudarQtde = (nome, delta) => {
   const item = carrinho.find(i => i.nome === nome);
   if (!item) return;
@@ -201,6 +194,7 @@ window.mudarQtde = (nome, delta) => {
   }
   renderCarrinho();
 };
+
 function renderCarrinho() {
   const container = document.getElementById("carrinho-container");
   container.innerHTML = "";
@@ -225,7 +219,6 @@ function renderCarrinho() {
   renderPagamentos();
 }
 
-// PAGAMENTOS
 function renderPagamentos() {
   const lista = document.getElementById("lista-pagamentos");
   if (!lista) return;
@@ -252,10 +245,12 @@ function renderPagamentos() {
     lista.appendChild(resumo);
   }
 }
+
 window.removerPagto = (idx) => {
   pagamentos.splice(idx, 1);
   renderPagamentos();
 };
+
 function adicionarPagamento() {
   const metodoSelect = document.getElementById("metodo-pagamento");
   const valorInput = document.getElementById("valor-pagamento");
@@ -295,7 +290,6 @@ function adicionarPagamento() {
   }
 }
 
-// WHATSAPP
 function montarMensagemWhatsApp() {
   const nome = document.getElementById("nome").value || "Não informado";
   const tipoAt = document.getElementById("tipo-atendimento").value;
@@ -333,6 +327,7 @@ function montarMensagemWhatsApp() {
   }
   return msg;
 }
+
 function enviarWhatsApp() {
   const mensagem = montarMensagemWhatsApp();
   const numero = "551147464394";
@@ -340,7 +335,6 @@ function enviarWhatsApp() {
   window.open(url, "_blank");
 }
 
-// RECIBO
 function imprimirRecibo() {
   if (carrinho.length === 0) {
     alert("Carrinho vazio. Adicione itens antes de imprimir.");
@@ -385,7 +379,6 @@ function imprimirRecibo() {
   window.print();
 }
 
-// NOVO PEDIDO
 function novoPedido() {
   if (!confirm("Iniciar um novo pedido? Isso vai limpar carrinho, pagamentos e dados do cliente.")) {
     return;
@@ -402,7 +395,6 @@ function novoPedido() {
   if (valorPagto) valorPagto.value = "";
 }
 
-// INICIALIZAÇÃO
 document.addEventListener("DOMContentLoaded", () => {
   renderMenu();
   renderCarrinho();
