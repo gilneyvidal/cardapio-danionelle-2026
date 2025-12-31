@@ -1,152 +1,75 @@
-// script.js
 // ===========================
 // CARDÁPIO SORVETES DANIONELLE
 // ===========================
-// ATENÇÃO: todos os preços abaixo são EXEMPLOS.
-// Ajuste conforme a tabela oficial da sorveteria.
+// Regra de preço automática por item:
+// - 1 a 4 unidades: precoVarejo
+// - 5 ou mais unidades: precoAtacado
+// Valores fictícios para apresentação.
 
 const menuData = [
   {
     categoria: "Picolés DanMilk",
     itens: [
-      { nome: "Abacate", preco: 3.5 },
-      { nome: "Amendoim", preco: 3.5 },
-      { nome: "Banana", preco: 3.5 },
-      { nome: "Beijinho", preco: 3.5 },
-      { nome: "Blue Ice", preco: 3.5 },
-      { nome: "Chocolate", preco: 3.5 },
-      { nome: "Chocolate Branco", preco: 3.5 },
-      { nome: "Coco Branco", preco: 3.5 },
-      { nome: "Coco Queimado", preco: 3.5 },
-      { nome: "Doce de Leite", preco: 3.5 },
-      { nome: "Flocos", preco: 3.5 },
-      { nome: "Leite Condensado", preco: 3.5 },
-      { nome: "Maçã Verde", preco: 3.5 },
-      { nome: "Menta c/ Flocos", preco: 3.5 },
-      { nome: "Milho Verde", preco: 3.5 },
-      { nome: "Mini Saia", preco: 3.5 },
-      { nome: "Morango", preco: 3.5 },
-      { nome: "Queijo", preco: 3.5 }
+      { nome: "Abacate", precoVarejo: 3.5, precoAtacado: 3.0 },
+      { nome: "Amendoim", precoVarejo: 3.5, precoAtacado: 3.0 },
+      { nome: "Banana", precoVarejo: 3.5, precoAtacado: 3.0 },
+      { nome: "Chocolate", precoVarejo: 3.5, precoAtacado: 3.0 },
+      { nome: "Coco Branco", precoVarejo: 3.5, precoAtacado: 3.0 },
+      { nome: "Morango", precoVarejo: 3.5, precoAtacado: 3.0 }
     ]
   },
   {
     categoria: "Picolés Frutelle",
     itens: [
-      { nome: "Abacaxi", preco: 3.5 },
-      { nome: "Abacaxi ao Vinho", preco: 3.5 },
-      { nome: "Açaí", preco: 3.5 },
-      { nome: "Caju", preco: 3.5 },
-      { nome: "Cupuaçu", preco: 3.5 },
-      { nome: "Goiaba", preco: 3.5 },
-      { nome: "Groselha", preco: 3.5 },
-      { nome: "Kiwi", preco: 3.5 },
-      { nome: "Limão", preco: 3.5 },
-      { nome: "Manga", preco: 3.5 },
-      { nome: "Maracujá", preco: 3.5 },
-      { nome: "Melancia", preco: 3.5 },
-      { nome: "Morango", preco: 3.5 },
-      { nome: "Tangerina", preco: 3.5 },
-      { nome: "Uva", preco: 3.5 }
+      { nome: "Abacaxi", precoVarejo: 3.0, precoAtacado: 2.6 },
+      { nome: "Limão", precoVarejo: 3.0, precoAtacado: 2.6 },
+      { nome: "Uva", precoVarejo: 3.0, precoAtacado: 2.6 },
+      { nome: "Maracujá", precoVarejo: 3.0, precoAtacado: 2.6 }
     ]
   },
   {
     categoria: "Picolés Especiais",
     itens: [
-      { nome: "Chococo", preco: 4.5 },
-      { nome: "Romeu e Julieta", preco: 4.5 },
-      { nome: "Torta de Limão", preco: 4.5 }
-    ]
-  },
-  {
-    categoria: "Picolés Eski",
-    itens: [
-      { nome: "EskiChantilly", preco: 5.0 },
-      { nome: "EskiChocolate", preco: 5.0 },
-      { nome: "EskiCoco", preco: 5.0 },
-      { nome: "EskiLacta", preco: 5.0 },
-      { nome: "EskiMaracujá (Branco)", preco: 5.0 },
-      { nome: "EskiMaracujá (Preto)", preco: 5.0 },
-      { nome: "EskiMorango", preco: 5.0 }
+      { nome: "Chococo", precoVarejo: 4.5, precoAtacado: 4.0 },
+      { nome: "Romeu e Julieta", precoVarejo: 4.5, precoAtacado: 4.0 },
+      { nome: "Torta de Limão", precoVarejo: 4.5, precoAtacado: 4.0 }
     ]
   },
   {
     categoria: "Copinhos 250 ml (sorvete)",
     itens: [
-      { nome: "Abacaxi", preco: 4.5 },
-      { nome: "Abacaxi ao Vinho", preco: 4.5 },
-      { nome: "Beijinho", preco: 4.5 },
-      { nome: "Blue Ice", preco: 4.5 },
-      { nome: "Brigadeiro", preco: 4.5 },
-      { nome: "Chantilly c/ Amarena", preco: 4.5 },
-      { nome: "Chocolate", preco: 4.5 },
-      { nome: "Coco Branco", preco: 4.5 },
-      { nome: "Creme", preco: 4.5 },
-      { nome: "Flocos", preco: 4.5 },
-      { nome: "Lacta", preco: 4.5 },
-      { nome: "Leite Condensado", preco: 4.5 },
-      { nome: "Leitinho Trufado", preco: 4.5 },
-      { nome: "Limão", preco: 4.5 },
-      { nome: "Maracujá", preco: 4.5 },
-      { nome: "Menta c/ Flocos", preco: 4.5 },
-      { nome: "Milho Verde", preco: 4.5 },
-      { nome: "Morango", preco: 4.5 },
-      { nome: "Napolitano", preco: 4.5 },
-      { nome: "Passas ao Rum", preco: 4.5 },
-      { nome: "Pistache", preco: 4.5 },
-      { nome: "Sensação", preco: 4.5 }
+      { nome: "Chocolate", precoVarejo: 4.5, precoAtacado: 4.0 },
+      { nome: "Morango", precoVarejo: 4.5, precoAtacado: 4.0 },
+      { nome: "Napolitano", precoVarejo: 4.5, precoAtacado: 4.0 }
     ]
   },
   {
     categoria: "Açaí 220 ml",
     itens: [
-      { nome: "Açaí 220 ml c/ Granola", preco: 8.0 }
+      { nome: "Açaí c/ Granola 220 ml", precoVarejo: 8.0, precoAtacado: 7.0 }
     ]
   },
   {
     categoria: "Potes 1,5 L",
     itens: [
-      { nome: "Açaí", preco: 30.0 },
-      { nome: "Açaí com Kinder", preco: 32.0 },
-      { nome: "Abacaxi ao Vinho", preco: 28.0 },
-      { nome: "Abóbora c/ Coco", preco: 28.0 },
-      { nome: "Bombom", preco: 30.0 },
-      { nome: "Brigadeiro", preco: 30.0 },
-      { nome: "Cereja", preco: 30.0 },
-      { nome: "Chantilly c/ Amarena", preco: 30.0 },
-      { nome: "Chiclets", preco: 30.0 },
-      { nome: "Chocolate", preco: 28.0 },
-      { nome: "Chocotone", preco: 30.0 },
-      { nome: "Coco Branco", preco: 28.0 },
-      { nome: "Creme", preco: 28.0 },
-      { nome: "Cupuaçu", preco: 28.0 },
-      { nome: "Flocos", preco: 28.0 },
-      { nome: "Floresta Negra", preco: 32.0 },
-      { nome: "Kinder Bueno", preco: 32.0 },
-      { nome: "Lacta", preco: 30.0 },
-      { nome: "Leitinho", preco: 28.0 },
-      { nome: "Leitinho Trufado", preco: 30.0 },
-      { nome: "Maracujá", preco: 28.0 },
-      { nome: "Morango", preco: 28.0 },
-      { nome: "Napolitano", preco: 28.0 },
-      { nome: "Raffaello", preco: 32.0 },
-      { nome: "Sensação", preco: 30.0 },
-      { nome: "Unicórnio", preco: 32.0 }
+      { nome: "Chocolate 1,5 L", precoVarejo: 30.0, precoAtacado: 26.0 },
+      { nome: "Morango 1,5 L", precoVarejo: 30.0, precoAtacado: 26.0 },
+      { nome: "Napolitano 1,5 L", precoVarejo: 30.0, precoAtacado: 26.0 },
+      { nome: "Açaí 1,5 L", precoVarejo: 35.0, precoAtacado: 30.0 }
     ]
   },
   {
-    categoria: "Caixas de Sorvete (atacado)",
+    categoria: "Caixas de Picolés (atacado)",
     itens: [
       {
-        nome: "Caixa de Picolé DanMilk (25 un.)",
-        preco: 70.0
+        nome: "Caixa DanMilk (25 un.)",
+        precoVarejo: 80.0,
+        precoAtacado: 72.0
       },
       {
-        nome: "Caixa de Picolé Frutelle (25 un.)",
-        preco: 70.0
-      },
-      {
-        nome: "Caixa sortida (consultar sabores)",
-        preco: 75.0
+        nome: "Caixa Frutelle (25 un.)",
+        precoVarejo: 75.0,
+        precoAtacado: 68.0
       }
     ]
   }
@@ -158,10 +81,32 @@ const menuData = [
 let carrinho = [];
 
 // ===========================
-// FUNÇÃO: FORMATAR VALOR
+// FUNÇÕES DE UTILIDADE
 // ===========================
 function formatarValor(valor) {
   return `R$ ${valor.toFixed(2).replace(".", ",")}`;
+}
+
+function encontrarProdutoPorNome(nome) {
+  for (const categoria of menuData) {
+    const encontrado = categoria.itens.find((item) => item.nome === nome);
+    if (encontrado) return encontrado;
+  }
+  return null;
+}
+
+/**
+ * Retorna o preço unitário correto de um produto
+ * de acordo com a quantidade escolhida no carrinho.
+ */
+function obterPrecoUnitario(nome, quantidade) {
+  const produto = encontrarProdutoPorNome(nome);
+  if (!produto) return 0;
+
+  if (quantidade >= 5) {
+    return produto.precoAtacado;
+  }
+  return produto.precoVarejo;
 }
 
 // ===========================
@@ -194,14 +139,13 @@ function renderMenu() {
 
       const priceSpan = document.createElement("span");
       priceSpan.className = "item-price";
-      priceSpan.textContent = formatarValor(item.preco);
+      // Mostramos o preço de varejo como referência
+      priceSpan.textContent = formatarValor(item.precoVarejo);
 
       const btnAdd = document.createElement("button");
       btnAdd.className = "btn-add";
       btnAdd.textContent = "+ Adicionar";
-      btnAdd.addEventListener("click", () =>
-        adicionarAoCarrinho(item.nome, item.preco)
-      );
+      btnAdd.addEventListener("click", () => adicionarAoCarrinho(item.nome));
 
       itemDiv.appendChild(nameSpan);
       itemDiv.appendChild(priceSpan);
@@ -215,23 +159,20 @@ function renderMenu() {
 }
 
 // ===========================
-// ADICIONAR AO CARRINHO
+// CARRINHO
 // ===========================
-function adicionarAoCarrinho(nome, preco) {
+function adicionarAoCarrinho(nome) {
   const existente = carrinho.find((item) => item.nome === nome);
 
   if (existente) {
     existente.quantidade += 1;
   } else {
-    carrinho.push({ nome, preco, quantidade: 1 });
+    carrinho.push({ nome, quantidade: 1 });
   }
 
   renderCarrinho();
 }
 
-// ===========================
-// ATUALIZAR QUANTIDADE
-// ===========================
 function atualizarQuantidade(nome, delta) {
   carrinho = carrinho
     .map((item) =>
@@ -244,9 +185,6 @@ function atualizarQuantidade(nome, delta) {
   renderCarrinho();
 }
 
-// ===========================
-// RENDERIZAR CARRINHO
-// ===========================
 function renderCarrinho() {
   const container = document.getElementById("carrinho-container");
   const totalSpan = document.getElementById("total");
@@ -289,7 +227,8 @@ function renderCarrinho() {
     controlsDiv.appendChild(qtySpan);
     controlsDiv.appendChild(btnPlus);
 
-    const subtotal = item.preco * item.quantidade;
+    const precoUnitario = obterPrecoUnitario(item.nome, item.quantidade);
+    const subtotal = precoUnitario * item.quantidade;
     total += subtotal;
 
     const subtotalSpan = document.createElement("span");
@@ -306,7 +245,7 @@ function renderCarrinho() {
 }
 
 // ===========================
-// MONTAR MENSAGEM WHATSAPP
+// MENSAGEM WHATSAPP
 // ===========================
 function montarMensagemWhatsApp() {
   const nome = document.getElementById("nome")?.value?.trim() || "";
@@ -319,48 +258,46 @@ function montarMensagemWhatsApp() {
   const observacoes =
     document.getElementById("observacoes")?.value?.trim() || "";
 
-  let mensagem = `*Pedido - Sorvetes Danionelle*\n\n`;
+  let mensagem = `*Pedido - Sorvetes Danionelle*%0A%0A`;
 
   if (carrinho.length === 0) {
-    mensagem += "_(Carrinho vazio)_\n\n";
+    mensagem += `_Carrinho vazio_%0A%0A`;
   } else {
-    mensagem += "*Itens:*\n";
+    mensagem += `*Itens:*%0A`;
     let total = 0;
 
     carrinho.forEach((item) => {
-      const subtotal = item.preco * item.quantidade;
+      const precoUnitario = obterPrecoUnitario(item.nome, item.quantidade);
+      const subtotal = precoUnitario * item.quantidade;
       total += subtotal;
-      mensagem += `- ${item.quantidade}x ${item.nome} - ${formatarValor(
+
+      const tipoPreco =
+        item.quantidade >= 5 ? "atacado" : "varejo";
+
+      mensagem += `- ${item.quantidade}x ${item.nome} (${tipoPreco}) - ${formatarValor(
         subtotal
-      )}\n`;
+      )}%0A`;
     });
 
-    mensagem += `\n*Total:* ${formatarValor(total)}\n\n`;
+    mensagem += `%0A*Total:* ${formatarValor(total)}%0A%0A`;
   }
 
-  mensagem += `*Nome:* ${nome || "Não informado"}\n`;
-  mensagem += `*Tipo de atendimento:* ${tipoAtendimento}\n`;
-  mensagem += `*Endereço / referência:* ${endereco}\n`;
-  mensagem += `*Pagamento:* ${pagamento}\n`;
+  mensagem += `*Nome:* ${nome || "Não informado"}%0A`;
+  mensagem += `*Tipo de atendimento:* ${tipoAtendimento}%0A`;
+  mensagem += `*Endereço / referência:* ${endereco}%0A`;
+  mensagem += `*Pagamento:* ${pagamento}%0A`;
 
   if (observacoes) {
-    mensagem += `\n*Observações:*\n${observacoes}\n`;
+    mensagem += `%0A*Observações:*%0A${encodeURIComponent(observacoes)}%0A`;
   }
 
-  return encodeURIComponent(mensagem);
+  return mensagem;
 }
 
-// ===========================
-// ENVIAR WHATSAPP
-// ===========================
 function enviarWhatsApp() {
-  const mensagemCodificada = montarMensagemWhatsApp();
-
-  // IMPORTANTE: confirme com o cliente qual número tem WhatsApp.
-  // Abaixo usei o telefone (11) 4746-4394 como exemplo.
-  const numeroWhatsApp = "551147464394";
-
-  const url = `https://wa.me/${numeroWhatsApp}?text=${mensagemCodificada}`;
+  const mensagem = montarMensagemWhatsApp();
+  const numeroWhatsApp = "551147464394"; // Número da loja (formato DDI+DDD+NUMERO, sem + ou espaços)
+  const url = `https://wa.me/${numeroWhatsApp}?text=${mensagem}`;
   window.open(url, "_blank");
 }
 
