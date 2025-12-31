@@ -87,9 +87,15 @@
           placeholder="Ex.: Troco para R$ 50,00 / Substituir algum sabor / Horário desejado..."
         ></textarea>
 
-        <button id="btn-enviar" class="btn-whatsapp">
-          Enviar pedido pelo WhatsApp
-        </button>
+        <div class="buttons-row">
+          <button id="btn-enviar" class="btn-whatsapp" type="button">
+            Enviar pedido pelo WhatsApp
+          </button>
+
+          <button id="btn-imprimir" class="btn-print" type="button">
+            Imprimir recibo
+          </button>
+        </div>
       </form>
     </aside>
   </main>
@@ -101,6 +107,42 @@
       Preços meramente ilustrativos.
     </p>
   </footer>
+
+  <!-- ÁREA DE RECIBO PARA IMPRESSÃO (OCULTA NA TELA) -->
+  <div id="recibo" class="recibo">
+    <div class="recibo-header">
+      <h2>Sorvetes Danionelle</h2>
+      <p>Alameda Fernando Costa, 481</p>
+      <p>Jardim Imperador – Suzano – SP</p>
+      <p>Tel: (11) 4746-4394 · (11) 4759-1999</p>
+      <p>--------------------------------</p>
+      <p id="recibo-data"></p>
+      <p>--------------------------------</p>
+    </div>
+
+    <div class="recibo-cliente">
+      <p><strong>Cliente:</strong> <span id="recibo-nome"></span></p>
+      <p><strong>Atendimento:</strong> <span id="recibo-tipo-atendimento"></span></p>
+      <p><strong>Endereço/ref.:</strong> <span id="recibo-endereco"></span></p>
+      <p><strong>Pagamento:</strong> <span id="recibo-pagamento"></span></p>
+      <p>--------------------------------</p>
+    </div>
+
+    <div class="recibo-itens">
+      <p><strong>ITENS</strong></p>
+      <div id="recibo-itens-lista"></div>
+      <p>--------------------------------</p>
+    </div>
+
+    <div class="recibo-total">
+      <p><strong>Total:</strong> <span id="recibo-total"></span></p>
+      <p>--------------------------------</p>
+    </div>
+
+    <div class="recibo-rodape">
+      <p>Obrigado pela preferência!</p>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
