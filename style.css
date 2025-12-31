@@ -28,7 +28,6 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 .pedido-form label { font-size: 0.8rem; font-weight: bold; margin-top: 5px; }
 .pedido-form input, .pedido-form select, .pedido-form textarea { padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 0.9rem; }
 
-/* ESTILO PAGAMENTO MULTI */
 .pagamento-multi-box { background: #fdf8ff; border: 1px solid #ffd1ec; padding: 10px; border-radius: 8px; }
 .pagamento-inputs { display: flex; gap: 5px; margin-bottom: 8px; }
 .pagamento-inputs select { flex: 2; font-size: 0.85rem; }
@@ -49,7 +48,6 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 .btn-novo { background: #ff5fa6; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.9rem; }
 .btn-novo:hover { background: #e04a8f; }
 
-/* RECIBO 58mm */
 .recibo { display: none; width: 58mm; font-family: monospace; font-size: 10px; padding: 2mm; }
 .recibo-header h2 { font-size: 12px; text-align: center; margin-bottom: 2px; }
 .recibo-header p { text-align: center; margin: 1px 0; }
