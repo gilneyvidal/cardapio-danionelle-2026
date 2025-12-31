@@ -139,7 +139,7 @@ function renderMenu() {
 
       const priceSpan = document.createElement("span");
       priceSpan.className = "item-price";
-      // Mostramos o preço de varejo como referência
+      // Mostramos o preço de varejo como referência (público final)
       priceSpan.textContent = formatarValor(item.precoVarejo);
 
       const btnAdd = document.createElement("button");
@@ -271,8 +271,7 @@ function montarMensagemWhatsApp() {
       const subtotal = precoUnitario * item.quantidade;
       total += subtotal;
 
-      const tipoPreco =
-        item.quantidade >= 5 ? "atacado" : "varejo";
+      const tipoPreco = item.quantidade >= 5 ? "atacado" : "varejo";
 
       mensagem += `- ${item.quantidade}x ${item.nome} (${tipoPreco}) - ${formatarValor(
         subtotal
@@ -302,6 +301,83 @@ function enviarWhatsApp() {
 }
 
 // ===========================
+// RECIBO PARA IMPRESSÃO
+// ===========================
+function preencherDadosRecibo() {
+  const nome = document.getElementById("nome")?.value?.trim() || "";
+  const tipoAtendimento =
+    document.getElementById("tipo-atendimento")?.value || "Não informado";
+  const endereco =
+    document.getElementById("endereco")?.value?.trim() || "Não informado";
+  const pagamento =
+    document.getElementById("pagamento")?.value || "Não informado";
+
+  const reciboDataEl = document.getElementById("recibo-data");
+  const reciboNomeEl = document.getElementById("recibo-nome");
+  const reciboTipoAtendimentoEl = document.getElementById(
+    "recibo-tipo-atendimento"
+  );
+  const reciboEnderecoEl = document.getElementById("recibo-endereco");
+  const reciboPagamentoEl = document.getElementById("recibo-pagamento");
+  const reciboItensListaEl = document.getElementById("recibo-itens-lista");
+  const reciboTotalEl = document.getElementById("recibo-total");
+
+  if (
+    !reciboDataEl ||
+    !reciboNomeEl ||
+    !reciboTipoAtendimentoEl ||
+    !reciboEnderecoEl ||
+    !reciboPagamentoEl ||
+    !reciboItensListaEl ||
+    !reciboTotalEl
+  ) {
+    return;
+  }
+
+  const agora = new Date();
+  const dataFormatada = agora.toLocaleString("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short"
+  });
+  reciboDataEl.textContent = `Data/Hora: ${dataFormatada}`;
+
+  reciboNomeEl.textContent = nome || "Não informado";
+  reciboTipoAtendimentoEl.textContent = tipoAtendimento;
+  reciboEnderecoEl.textContent = endereco;
+  reciboPagamentoEl.textContent = pagamento;
+
+  reciboItensListaEl.innerHTML = "";
+
+  let total = 0;
+
+  carrinho.forEach((item) => {
+    const precoUnitario = obterPrecoUnitario(item.nome, item.quantidade);
+    const subtotal = precoUnitario * item.quantidade;
+    total += subtotal;
+
+    const tipoPreco = item.quantidade >= 5 ? "ATACADO" : "VAREJO";
+
+    const linha = document.createElement("p");
+    linha.textContent = `${item.quantidade}x ${item.nome} (${tipoPreco}) - ${formatarValor(
+      subtotal
+    )}`;
+    reciboItensListaEl.appendChild(linha);
+  });
+
+  reciboTotalEl.textContent = formatarValor(total);
+}
+
+function imprimirRecibo() {
+  if (carrinho.length === 0) {
+    alert("O carrinho está vazio. Adicione itens antes de imprimir o recibo.");
+    return;
+  }
+
+  preencherDadosRecibo();
+  window.print();
+}
+
+// ===========================
 // INICIALIZAÇÃO
 // ===========================
 document.addEventListener("DOMContentLoaded", () => {
@@ -313,6 +389,14 @@ document.addEventListener("DOMContentLoaded", () => {
     btnEnviar.addEventListener("click", (e) => {
       e.preventDefault();
       enviarWhatsApp();
+    });
+  }
+
+  const btnImprimir = document.getElementById("btn-imprimir");
+  if (btnImprimir) {
+    btnImprimir.addEventListener("click", (e) => {
+      e.preventDefault();
+      imprimirRecibo();
     });
   }
 });
