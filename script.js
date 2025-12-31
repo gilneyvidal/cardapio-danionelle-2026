@@ -182,6 +182,19 @@ function precoUnitario(nome, qtde) {
   return qtde >= 5 ? prod.precoAtacado : prod.precoVarejo;
 }
 
+function calcularTotalPedido() {
+  let total = 0;
+  carrinho.forEach(item => {
+    const pUnit = precoUnitario(item.nome, item.quantidade);
+    total += pUnit * item.quantidade;
+  });
+  return total;
+}
+
+function calcularTotalPagamentos() {
+  return pagamentos.reduce((soma, p) => soma + p.valor, 0);
+}
+
 // ===========================
 // RENDERIZAÇÃO DO MENU
 // ===========================
@@ -230,12 +243,10 @@ window.mudarQtde = (nome, delta) => {
 function renderCarrinho() {
   const container = document.getElementById("carrinho-container");
   container.innerHTML = "";
-  let total = 0;
 
   carrinho.forEach(item => {
     const pUnit = precoUnitario(item.nome, item.quantidade);
     const sub = pUnit * item.quantidade;
-    total += sub;
 
     const row = document.createElement("div");
     row.className = "cart-row";
@@ -251,7 +262,11 @@ function renderCarrinho() {
     container.appendChild(row);
   });
 
+  const total = calcularTotalPedido();
   document.getElementById("total").innerText = formatarValor(total);
+
+  // sempre que o carrinho mudar, atualiza resumo de pagamento (caso já tenha pagamentos)
+  renderPagamentos();
 }
 
 // ===========================
@@ -259,7 +274,9 @@ function renderCarrinho() {
 // ===========================
 function renderPagamentos() {
   const lista = document.getElementById("lista-pagamentos");
+  if (!lista) return;
   lista.innerHTML = "";
+
   pagamentos.forEach((p, idx) => {
     const div = document.createElement("div");
     div.className = "pagamento-item";
@@ -269,6 +286,21 @@ function renderPagamentos() {
     `;
     lista.appendChild(div);
   });
+
+  // Resumo: Total, Pago, Restante
+  const totalPedido = calcularTotalPedido();
+  if (totalPedido > 0) {
+    const totalPago = calcularTotalPagamentos();
+    const restante = totalPedido - totalPago;
+
+    const resumo = document.createElement("div");
+    resumo.className = "pagamento-resumo";
+    resumo.textContent =
+      `Total: ${formatarValor(totalPedido)} | ` +
+      `Pago: ${formatarValor(totalPago)} | ` +
+      `Restante: ${formatarValor(Math.max(restante, 0))}`;
+    lista.appendChild(resumo);
+  }
 }
 
 window.removerPagto = (idx) => {
@@ -277,16 +309,50 @@ window.removerPagto = (idx) => {
 };
 
 function adicionarPagamento() {
-  const metodo = document.getElementById("metodo-pagamento").value;
+  const metodoSelect = document.getElementById("metodo-pagamento");
   const valorInput = document.getElementById("valor-pagamento");
-  const valor = parseFloat(valorInput.value.replace(",", "."));
+
+  const metodo = metodoSelect.value;
+  const valor = parseFloat((valorInput.value || "").replace(",", "."));
+
+  const totalPedido = calcularTotalPedido();
+  if (totalPedido <= 0) {
+    alert("Adicione itens ao carrinho antes de registrar pagamentos.");
+    return;
+  }
+
   if (!valor || valor <= 0) {
     alert("Informe um valor de pagamento válido.");
     return;
   }
+
+  const totalPagoAntes = calcularTotalPagamentos();
+  const restanteAntes = totalPedido - totalPagoAntes;
+
+  if (valor - restanteAntes > 0.01) {
+    alert(`O valor informado é maior que o restante (${formatarValor(restanteAntes)}).`);
+    return;
+  }
+
+  // Lança o pagamento
   pagamentos.push({ metodo, valor });
-  valorInput.value = "";
   renderPagamentos();
+
+  // Calcula o novo restante e sugere automaticamente
+  const totalPagoDepois = calcularTotalPagamentos();
+  const restante = totalPedido - totalPagoDepois;
+
+  if (restante > 0.01) {
+    // Sugere o restante no campo de valor
+    valorInput.value = restante.toFixed(2).replace(".", ",");
+    // Sugere método diferente (por ex., Dinheiro) caso ainda não tenha sido usado
+    if (pagamentos.length === 1 && metodo !== "Dinheiro") {
+      metodoSelect.value = "Dinheiro";
+    }
+  } else {
+    // Pedido quitado
+    valorInput.value = "";
+  }
 }
 
 // ===========================
@@ -303,19 +369,19 @@ function montarMensagemWhatsApp() {
   msg += `*Atendimento:* ${tipoAt}%0A`;
   msg += `*Endereço:* ${end}%0A%0A`;
 
+  const totalPedido = calcularTotalPedido();
+
   if (carrinho.length === 0) {
     msg += `_Carrinho vazio_%0A`;
   } else {
     msg += `*Itens:*%0A`;
-    let total = 0;
     carrinho.forEach(item => {
       const pUnit = precoUnitario(item.nome, item.quantidade);
       const sub = pUnit * item.quantidade;
-      total += sub;
       const tipoPreco = item.quantidade >= 5 ? "Atacado" : "Varejo";
       msg += `- ${item.quantidade}x ${item.nome} (${tipoPreco}) - ${formatarValor(sub)}%0A`;
     });
-    msg += `%0A*Total:* ${formatarValor(total)}%0A`;
+    msg += `%0A*Total:* ${formatarValor(totalPedido)}%0A`;
   }
 
   if (pagamentos.length > 0) {
@@ -323,6 +389,10 @@ function montarMensagemWhatsApp() {
     pagamentos.forEach(p => {
       msg += `- ${p.metodo}: ${formatarValor(p.valor)}%0A`;
     });
+    const totalPago = calcularTotalPagamentos();
+    const restante = totalPedido - totalPago;
+    msg += `%0A*Pago:* ${formatarValor(totalPago)}%0A`;
+    msg += `*Restante:* ${formatarValor(Math.max(restante, 0))}%0A`;
   }
 
   if (obs) {
@@ -378,6 +448,13 @@ function imprimirRecibo() {
       linha.textContent = `${p.metodo}: ${formatarValor(p.valor)}`;
       pagtosDiv.appendChild(linha);
     });
+
+    const totalPago = calcularTotalPagamentos();
+    const restante = total - totalPago;
+    const resumoPag = document.createElement("p");
+    resumoPag.textContent =
+      `Pago: ${formatarValor(totalPago)} | Restante: ${formatarValor(Math.max(restante, 0))}`;
+    pagtosDiv.appendChild(resumoPag);
   }
 
   document.getElementById("recibo-total").innerText = formatarValor(total);
