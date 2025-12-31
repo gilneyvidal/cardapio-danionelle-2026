@@ -287,11 +287,20 @@ body {
   box-shadow: 0 0 0 2px rgba(255, 95, 166, 0.2);
 }
 
+/* BOTÕES DO FORMULÁRIO */
+.buttons-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.buttons-row button {
+  flex: 1;
+}
+
 /* Botão WhatsApp */
 .btn-whatsapp {
-  margin-top: 6px;
   padding: 10px 12px;
-  width: 100%;
   border-radius: 999px;
   border: none;
   background: linear-gradient(135deg, #25d366, #128c7e);
@@ -317,6 +326,34 @@ body {
   opacity: 0.9;
 }
 
+/* Botão Imprimir */
+.btn-print {
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #6c757d, #343a40);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
+}
+
+.btn-print:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(52, 58, 64, 0.4);
+}
+
+.btn-print:active {
+  transform: translateY(0);
+  box-shadow: none;
+  opacity: 0.9;
+}
+
 /* ===========================
    RODAPÉ
 =========================== */
@@ -325,4 +362,63 @@ body {
   padding: 10px 12px 16px;
   font-size: 0.8rem;
   color: #4a6680;
+}
+
+/* ===========================
+   RECIBO PARA IMPRESSÃO
+=========================== */
+
+/* Área de recibo fica oculta na visualização normal */
+.recibo {
+  display: none;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  color: #000;
+}
+
+/* Estilos específicos para impressão */
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  /* Esconde tudo da interface normal */
+  .header,
+  .main-container,
+  .footer {
+    display: none !important;
+  }
+
+  /* Mostra apenas o recibo */
+  .recibo {
+    display: block;
+    padding: 8px;
+  }
+
+  .recibo-header,
+  .recibo-cliente,
+  .recibo-itens,
+  .recibo-total,
+  .recibo-rodape {
+    margin-bottom: 4px;
+  }
+
+  .recibo-header h2 {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .recibo-header p,
+  .recibo-cliente p,
+  .recibo-itens p,
+  .recibo-total p,
+  .recibo-rodape p {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  #recibo-itens-lista p {
+    font-size: 12px;
+  }
 }
