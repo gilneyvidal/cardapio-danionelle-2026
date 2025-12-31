@@ -1,420 +1,328 @@
-/* style.css */
 /* ===========================
-   TIPOGRAFIA PERSONALIZADA (OPCIONAL)
-=========================== */
-@font-face {
-  font-family: "Dolato de Stato";
-  src: url("fonts/Dolato de Stato Font.ttf") format("truetype");
-  font-display: swap;
-}
-
-/* ===========================
-   RESET E CONFIGURAÇÕES GLOBAIS
+   RESET BÁSICO
 =========================== */
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
-  font-family: "Calibri", Arial, sans-serif;
-  background: linear-gradient(
-      rgba(215, 238, 252, 0.85),
-      rgba(194, 222, 246, 0.9)
-    ),
-    url("images/background-gelo.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  color: #24415c;
-  line-height: 1.6;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #ffedf7, #f0f8ff);
+  color: #143550;
   min-height: 100vh;
 }
 
-.page-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
 /* ===========================
-   CABEÇALHO
+   HEADER
 =========================== */
 .header {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
-  padding: 20px 30px;
-  margin-bottom: 30px;
   display: flex;
   align-items: center;
-  gap: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-  backdrop-filter: blur(5px);
+  gap: 16px;
+  padding: 16px 20px;
+  background: linear-gradient(120deg, #ff8ec9, #ffb6d9);
+  color: #143550;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .logo-img {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.header-text {
-  flex: 1;
+  border-radius: 16px;
+  background: #ffffffcc;
+  padding: 4px;
 }
 
 .header-text h1 {
-  font-family: "Dolato de Stato", "Calibri", Arial, sans-serif;
-  font-size: 2.5rem;
-  color: #143550;
+  font-size: 1.6rem;
   margin-bottom: 4px;
 }
 
 .header-text p {
-  font-size: 1rem;
-  color: #2d587e;
+  font-size: 0.95rem;
 }
 
 .header-info {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  opacity: 0.9;
 }
 
 /* ===========================
-   LAYOUT PRINCIPAL (GRID)
+   LAYOUT PRINCIPAL
 =========================== */
-.main-content {
+.main-container {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 30px;
-  margin-bottom: 30px;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 20px;
+  padding: 20px;
 }
 
-.section-title {
-  font-family: "Dolato de Stato", "Calibri", Arial, sans-serif;
-  font-size: 2rem;
-  color: #143550;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 3px solid #ff8ec9;
+@media (max-width: 900px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ===========================
-   ÁREA DO CARDÁPIO
+   TÍTULOS
 =========================== */
-.menu-area {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(8px);
+.section-title {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  color: #143550;
+}
+
+.section-subtitle {
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+  color: #34526b;
+}
+
+/* ===========================
+   CARDÁPIO
+=========================== */
+.menu-wrapper {
+  background: #ffffffcc;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+#menu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .menu-section {
-  margin-bottom: 28px;
+  background: #fdf8ff;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #ffd1ec;
 }
 
 .menu-section h2 {
-  font-family: "Dolato de Stato", "Calibri", Arial, sans-serif;
-  font-size: 1.6rem;
-  color: #143550;
-  margin-bottom: 14px;
-  padding-left: 14px;
-  border-left: 5px solid #ff8ec9;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+  color: #c02475;
 }
 
 .item-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  margin-top: 6px;
 }
 
 .item {
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 12px 14px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #ffffff;
 }
 
 .item-name {
-  flex: 1;
   font-size: 0.95rem;
-  color: #24415c;
 }
 
 .item-price {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #ff5fa6;
-  min-width: 80px;
-  text-align: right;
+  font-weight: 600;
+  color: #1b7a2f;
+  font-size: 0.9rem;
 }
 
+/* Botão Adicionar */
 .btn-add {
-  background: linear-gradient(135deg, #ff5fa6 0%, #ff3390 100%);
-  color: #fff;
+  padding: 6px 10px;
+  border-radius: 999px;
   border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-size: 0.9rem;
-  font-weight: bold;
+  background: linear-gradient(135deg, #ff5fa6, #ff8ec9);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
   white-space: nowrap;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
 }
 
 .btn-add:hover {
-  background: linear-gradient(135deg, #ff3390 0%, #ff157e 100%);
-  transform: scale(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(255, 95, 166, 0.4);
+}
+
+.btn-add:active {
+  transform: translateY(0);
+  box-shadow: none;
+  opacity: 0.9;
 }
 
 /* ===========================
-   ÁREA DO PEDIDO (CARRINHO + FORMULÁRIO)
+   CARRINHO
 =========================== */
-.order-area {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-direction: column;
-  backdrop-filter: blur(8px);
+.cart-wrapper {
+  background: #ffffffcc;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.cart-section {
-  margin-bottom: 24px;
-}
-
-.cart-title .section-title {
-  margin-bottom: 16px;
-}
-
-#carrinho-container {
-  min-height: 100px;
+.carrinho-container {
   max-height: 260px;
   overflow-y: auto;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  padding-right: 4px;
 }
 
 .cart-row {
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f7fbff;
+  margin-bottom: 6px;
 }
 
 .cart-item-name {
-  flex: 1;
   font-size: 0.9rem;
-  color: #24415c;
 }
 
 .cart-controls {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .cart-btn {
-  background: #ff5fa6;
-  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
   border: none;
-  border-radius: 5px;
-  width: 26px;
-  height: 26px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.15s ease;
-  display: flex;
+  background: #ff8ec9;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
 .cart-btn:hover {
-  background: #ff3390;
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.cart-btn:active {
+  transform: translateY(0);
 }
 
 .cart-qty {
-  font-size: 0.95rem;
-  font-weight: bold;
-  color: #24415c;
-  min-width: 26px;
+  min-width: 18px;
   text-align: center;
+  font-size: 0.9rem;
 }
 
 .cart-subtotal {
-  font-size: 0.95rem;
-  font-weight: bold;
-  color: #ff5fa6;
-  min-width: 80px;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-align: right;
+  color: #1b7a2f;
 }
 
-.cart-total {
+.cart-total-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 2px 4px;
-  border-top: 3px solid #ff8ec9;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #143550;
+  border-top: 1px solid #e4eaf0;
+  padding-top: 8px;
+  margin-bottom: 12px;
+  font-weight: 700;
 }
 
 /* ===========================
-   FORMULÁRIO DE PEDIDO
+   FORMULÁRIO
 =========================== */
-.order-form {
+.form-title {
+  margin-top: 12px;
+}
+
+.pedido-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
+  margin-top: 6px;
 }
 
-.order-form label {
-  font-size: 0.95rem;
-  font-weight: bold;
-  color: #143550;
-  margin-bottom: 4px;
+.pedido-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
-.label-help {
-  font-size: 0.8rem;
-  font-weight: normal;
-  color: #5378a1;
+.pedido-form input,
+.pedido-form select,
+.pedido-form textarea {
+  font-size: 0.9rem;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d0d7e2;
+  resize: vertical;
 }
 
-.order-form input,
-.order-form select,
-.order-form textarea {
-  width: 100%;
-  padding: 10px 12px;
-  border: 2px solid #c3d6eb;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-family: "Calibri", Arial, sans-serif;
-  color: #24415c;
-  background: #ffffff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.order-form input:focus,
-.order-form select:focus,
-.order-form textarea:focus {
+.pedido-form input:focus,
+.pedido-form select:focus,
+.pedido-form textarea:focus {
   outline: none;
   border-color: #ff5fa6;
   box-shadow: 0 0 0 2px rgba(255, 95, 166, 0.2);
 }
 
-.order-form textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.btn-submit {
-  background: linear-gradient(135deg, #143550 0%, #0c2134 100%);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 14px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* Botão WhatsApp */
+.btn-whatsapp {
   margin-top: 6px;
+  padding: 10px 12px;
+  width: 100%;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #25d366, #128c7e);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
 }
 
-.btn-submit:hover {
-  background: linear-gradient(135deg, #0c2134 0%, #071421 100%);
-  transform: scale(1.02);
+.btn-whatsapp:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(18, 140, 126, 0.4);
+}
+
+.btn-whatsapp:active {
+  transform: translateY(0);
+  box-shadow: none;
+  opacity: 0.9;
 }
 
 /* ===========================
    RODAPÉ
 =========================== */
 .footer {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  color: #143550;
-  backdrop-filter: blur(8px);
-}
-
-.footer p {
-  margin: 4px 0;
-}
-
-.footer hr {
-  border: none;
-  border-top: 2px solid #ff8ec9;
-  margin: 12px 0;
-}
-
-/* ===========================
-   RESPONSIVIDADE - MOBILE
-=========================== */
-@media (max-width: 900px) {
-  body {
-    background-attachment: scroll;
-  }
-
-  .page-wrapper {
-    padding: 16px;
-  }
-
-  .header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .logo-img {
-    width: 80px;
-    height: 80px;
-  }
-
-  .main-content {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .btn-add {
-    width: 100%;
-  }
-
-  .cart-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .cart-controls {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .cart-subtotal {
-    width: 100%;
-    text-align: center;
-  }
+  padding: 10px 12px 16px;
+  font-size: 0.8rem;
+  color: #4a6680;
 }
