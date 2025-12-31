@@ -89,11 +89,11 @@
 
         <div class="buttons-row">
           <button id="btn-enviar" class="btn-whatsapp" type="button">
-            Enviar pedido pelo WhatsApp
+            Enviar WhatsApp
           </button>
 
           <button id="btn-imprimir" class="btn-print" type="button">
-            Imprimir recibo
+            Imprimir Recibo
           </button>
         </div>
       </form>
@@ -108,39 +108,41 @@
     </p>
   </footer>
 
-  <!-- ÁREA DE RECIBO PARA IMPRESSÃO (OCULTA NA TELA) -->
+  <!-- ÁREA DE RECIBO PARA IMPRESSÃO (58mm) -->
   <div id="recibo" class="recibo">
     <div class="recibo-header">
-      <h2>Sorvetes Danionelle</h2>
+      <h2>SORVETES DANIONELLE</h2>
       <p>Alameda Fernando Costa, 481</p>
-      <p>Jardim Imperador – Suzano – SP</p>
-      <p>Tel: (11) 4746-4394 · (11) 4759-1999</p>
+      <p>Suzano - SP</p>
+      <p>(11) 4746-4394</p>
       <p>--------------------------------</p>
       <p id="recibo-data"></p>
+      <p id="recibo-id"></p>
       <p>--------------------------------</p>
     </div>
 
     <div class="recibo-cliente">
-      <p><strong>Cliente:</strong> <span id="recibo-nome"></span></p>
-      <p><strong>Atendimento:</strong> <span id="recibo-tipo-atendimento"></span></p>
-      <p><strong>Endereço/ref.:</strong> <span id="recibo-endereco"></span></p>
-      <p><strong>Pagamento:</strong> <span id="recibo-pagamento"></span></p>
+      <p><strong>CLIENTE:</strong> <span id="recibo-nome"></span></p>
+      <p><strong>TIPO:</strong> <span id="recibo-tipo-atendimento"></span></p>
+      <p><strong>PAGTO:</strong> <span id="recibo-pagamento"></span></p>
+      <p><strong>END:</strong> <span id="recibo-endereco"></span></p>
       <p>--------------------------------</p>
     </div>
 
     <div class="recibo-itens">
-      <p><strong>ITENS</strong></p>
+      <p><strong>ITENS DO PEDIDO</strong></p>
       <div id="recibo-itens-lista"></div>
       <p>--------------------------------</p>
     </div>
 
     <div class="recibo-total">
-      <p><strong>Total:</strong> <span id="recibo-total"></span></p>
+      <p><strong>TOTAL: <span id="recibo-total"></span></strong></p>
       <p>--------------------------------</p>
     </div>
 
     <div class="recibo-rodape">
       <p>Obrigado pela preferência!</p>
+      <p>www.danionelle.com.br</p>
     </div>
   </div>
 
