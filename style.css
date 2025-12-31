@@ -1,428 +1,46 @@
-/* ===========================
-   RESET BÁSICO
-=========================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height: 100vh; }
 
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Ubuntu, sans-serif;
-  background: linear-gradient(135deg, #ffedf7, #f0f8ff);
-  color: #143550;
-  min-height: 100vh;
-}
+.header { display: flex; align-items: center; gap: 16px; padding: 16px; background: #ff8ec9; color: #143550; }
+.logo-img { width: 60px; height: 60px; border-radius: 8px; background: #fff; padding: 2px; }
+.header-text h1 { font-size: 1.4rem; }
+.header-info { font-size: 0.8rem; opacity: 0.9; }
 
-/* ===========================
-   HEADER
-=========================== */
-.header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  background: linear-gradient(120deg, #ff8ec9, #ffb6d9);
-  color: #143550;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
+.main-container { display: grid; grid-template-columns: 2fr 1.2fr; gap: 20px; padding: 20px; }
+@media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } }
 
-.logo-img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  border-radius: 16px;
-  background: #ffffffcc;
-  padding: 4px;
-}
+.menu-wrapper, .cart-wrapper { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.menu-section { margin-bottom: 15px; border: 1px solid #ffd1ec; border-radius: 8px; padding: 10px; }
+.item { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 5px 0; align-items: center; }
+.btn-add { background: #ff5fa6; color: #fff; border: none; padding: 5px 10px; border-radius: 15px; cursor: pointer; }
 
-.header-text h1 {
-  font-size: 1.6rem;
-  margin-bottom: 4px;
-}
+.carrinho-container { max-height: 200px; overflow-y: auto; margin-bottom: 10px; }
+.cart-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 5px; background: #f7fbff; margin-bottom: 4px; font-size: 0.9rem; }
+.cart-total-row { font-weight: bold; border-top: 1px solid #eee; padding-top: 10px; display: flex; justify-content: space-between; }
 
-.header-text p {
-  font-size: 0.95rem;
-}
+.pedido-form { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.pedido-form label { font-size: 0.8rem; font-weight: bold; }
+.pedido-form input, .pedido-form select, .pedido-form textarea { padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
 
-.header-info {
-  font-size: 0.8rem;
-  opacity: 0.9;
-}
+/* ESTILO PAGAMENTO MULTI */
+.pagamento-multi-box { background: #fdf8ff; border: 1px solid #ffd1ec; padding: 10px; border-radius: 8px; }
+.pagamento-inputs { display: flex; gap: 5px; margin-bottom: 8px; }
+.pagamento-inputs select { flex: 2; }
+.pagamento-inputs input { flex: 2; }
+.btn-small { flex: 0.5; background: #143550; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+.lista-pagamentos { font-size: 0.85rem; }
+.pagamento-item { display: flex; justify-content: space-between; background: #fff; padding: 3px 8px; border-radius: 4px; margin-bottom: 3px; border: 1px solid #eee; }
+.btn-del { color: red; cursor: pointer; font-weight: bold; margin-left: 10px; }
 
-/* ===========================
-   LAYOUT PRINCIPAL
-=========================== */
-.main-container {
-  display: grid;
-  grid-template-columns: 2fr 1.2fr;
-  gap: 20px;
-  padding: 20px;
-}
+.buttons-row { display: flex; gap: 10px; margin-top: 10px; }
+.btn-whatsapp { background: #25d366; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; }
+.btn-print { background: #6c757d; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; }
 
-@media (max-width: 900px) {
-  .main-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ===========================
-   TÍTULOS
-=========================== */
-.section-title {
-  font-size: 1.25rem;
-  margin-bottom: 8px;
-  color: #143550;
-}
-
-.section-subtitle {
-  font-size: 0.9rem;
-  margin-bottom: 14px;
-  color: #34526b;
-}
-
-/* ===========================
-   CARDÁPIO
-=========================== */
-.menu-wrapper {
-  background: #ffffffcc;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-}
-
-#menu-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.menu-section {
-  background: #fdf8ff;
-  border-radius: 12px;
-  padding: 12px;
-  border: 1px solid #ffd1ec;
-}
-
-.menu-section h2 {
-  font-size: 1.05rem;
-  margin-bottom: 6px;
-  color: #c02475;
-}
-
-.item-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 6px;
-}
-
-.item {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: #ffffff;
-}
-
-.item-name {
-  font-size: 0.95rem;
-}
-
-.item-price {
-  font-weight: 600;
-  color: #1b7a2f;
-  font-size: 0.9rem;
-}
-
-/* Botão Adicionar */
-.btn-add {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: none;
-  background: linear-gradient(135deg, #ff5fa6, #ff8ec9);
-  color: #ffffff;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
-}
-
-.btn-add:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(255, 95, 166, 0.4);
-}
-
-.btn-add:active {
-  transform: translateY(0);
-  box-shadow: none;
-  opacity: 0.9;
-}
-
-/* ===========================
-   CARRINHO
-=========================== */
-.cart-wrapper {
-  background: #ffffffcc;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.carrinho-container {
-  max-height: 260px;
-  overflow-y: auto;
-  margin-bottom: 10px;
-  padding-right: 4px;
-}
-
-.cart-row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 8px;
-  align-items: center;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: #f7fbff;
-  margin-bottom: 6px;
-}
-
-.cart-item-name {
-  font-size: 0.9rem;
-}
-
-.cart-controls {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.cart-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  border: none;
-  background: #ff8ec9;
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.1s ease;
-}
-
-.cart-btn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-.cart-btn:active {
-  transform: translateY(0);
-}
-
-.cart-qty {
-  min-width: 18px;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.cart-subtotal {
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-align: right;
-  color: #1b7a2f;
-}
-
-.cart-total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid #e4eaf0;
-  padding-top: 8px;
-  margin-bottom: 12px;
-  font-weight: 700;
-}
-
-/* ===========================
-   FORMULÁRIO
-=========================== */
-.form-title {
-  margin-top: 12px;
-}
-
-.pedido-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 6px;
-}
-
-.pedido-form label {
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.pedido-form input,
-.pedido-form select,
-.pedido-form textarea {
-  font-size: 0.9rem;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #d0d7e2;
-  resize: vertical;
-}
-
-.pedido-form input:focus,
-.pedido-form select:focus,
-.pedido-form textarea:focus {
-  outline: none;
-  border-color: #ff5fa6;
-  box-shadow: 0 0 0 2px rgba(255, 95, 166, 0.2);
-}
-
-/* BOTÕES DO FORMULÁRIO */
-.buttons-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.buttons-row button {
-  flex: 1;
-}
-
-/* Botão WhatsApp */
-.btn-whatsapp {
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: none;
-  background: linear-gradient(135deg, #25d366, #128c7e);
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
-}
-
-.btn-whatsapp:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(18, 140, 126, 0.4);
-}
-
-/* Botão Imprimir */
-.btn-print {
-  padding: 10px 12px;
-  border-radius: 999px;
-  border: none;
-  background: linear-gradient(135deg, #6c757d, #343a40);
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
-}
-
-.btn-print:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(52, 58, 64, 0.4);
-}
-
-/* ===========================
-   RODAPÉ
-=========================== */
-.footer {
-  text-align: center;
-  padding: 10px 12px 16px;
-  font-size: 0.8rem;
-  color: #4a6680;
-}
-
-/* ===========================
-   RECIBO PARA IMPRESSÃO (58mm)
-=========================== */
-
-/* Área de recibo fica oculta na visualização normal */
-.recibo {
-  display: none;
-  font-family: "Courier New", Courier, monospace;
-  color: #000;
-  width: 58mm; /* Largura padrão de impressora térmica pequena */
-  margin: 0 auto;
-}
-
-/* Estilos específicos para impressão */
+/* RECIBO 58mm */
+.recibo { display: none; width: 58mm; font-family: monospace; font-size: 10px; }
 @media print {
-  @page {
-    margin: 0; /* Remove margens do navegador */
-  }
-
-  body {
-    background: #ffffff;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* Esconde tudo da interface normal */
-  .header,
-  .main-container,
-  .footer {
-    display: none !important;
-  }
-
-  /* Mostra apenas o recibo */
-  .recibo {
-    display: block;
-    padding: 5mm;
-    width: 58mm;
-  }
-
-  .recibo-header {
-    text-align: center;
-    margin-bottom: 5px;
-  }
-
-  .recibo-header h2 {
-    font-size: 14px;
-    margin-bottom: 2px;
-  }
-
-  .recibo-header p,
-  .recibo-cliente p,
-  .recibo-itens p,
-  .recibo-total p,
-  .recibo-rodape p {
-    font-size: 11px;
-    line-height: 1.2;
-    margin: 1px 0;
-  }
-
-  .recibo-itens {
-    margin-top: 5px;
-  }
-
-  #recibo-itens-lista p {
-    font-size: 10px;
-    word-wrap: break-word;
-  }
-
-  .recibo-rodape {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 10px;
-  }
+  body * { visibility: hidden; }
+  #recibo, #recibo * { visibility: visible; }
+  #recibo { display: block; position: absolute; left: 0; top: 0; width: 58mm; padding: 2mm; }
+  .header, .main-container, .footer { display: none !important; }
 }
