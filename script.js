@@ -7,9 +7,6 @@
 // Valores fictícios para apresentação (ajuste depois se quiser).
 
 const menuData = [
-  // =======================
-  // PICOLÉS - DANMILK
-  // =======================
   {
     categoria: "Picolés DanMilk",
     itens: [
@@ -33,10 +30,6 @@ const menuData = [
       { nome: "Queijo", precoVarejo: 3.50, precoAtacado: 3.00 }
     ]
   },
-
-  // =======================
-  // PICOLÉS - FRUTELLE
-  // =======================
   {
     categoria: "Picolés Frutelle",
     itens: [
@@ -57,10 +50,6 @@ const menuData = [
       { nome: "Uva", precoVarejo: 3.00, precoAtacado: 2.60 }
     ]
   },
-
-  // =======================
-  // PICOLÉS - ESPECIAL
-  // =======================
   {
     categoria: "Picolés Especiais",
     itens: [
@@ -69,10 +58,6 @@ const menuData = [
       { nome: "Torta de Limão", precoVarejo: 4.50, precoAtacado: 4.00 }
     ]
   },
-
-  // =======================
-  // PICOLÉS - ESKI
-  // =======================
   {
     categoria: "Picolés Eski",
     itens: [
@@ -85,15 +70,10 @@ const menuData = [
       { nome: "EskiMorango", precoVarejo: 5.00, precoAtacado: 4.50 }
     ]
   },
-
-  // =======================
-  // COPINHOS 250ml
-  // =======================
   {
     categoria: "Copos 250 ml",
     itens: [
       { nome: "Açaí (220g c/ Granola)", precoVarejo: 8.00, precoAtacado: 7.00 },
-
       { nome: "Abacaxi", precoVarejo: 4.50, precoAtacado: 4.00 },
       { nome: "Abacaxi ao Vinho", precoVarejo: 4.50, precoAtacado: 4.00 },
       { nome: "Beijinho", precoVarejo: 4.50, precoAtacado: 4.00 },
@@ -118,10 +98,6 @@ const menuData = [
       { nome: "Sensação", precoVarejo: 4.50, precoAtacado: 4.00 }
     ]
   },
-
-  // =======================
-  // POTES 1,5 L
-  // =======================
   {
     categoria: "Potes 1,5 L",
     itens: [
@@ -155,19 +131,14 @@ const menuData = [
   }
 ];
 
-// ===========================
-// ESTADO DO CARRINHO E PAGAMENTOS
-// ===========================
+// ESTADO
 let carrinho = [];
 let pagamentos = [];
 
-// ===========================
-// FUNÇÕES AUXILIARES
-// ===========================
+// AUXILIARES
 function formatarValor(v) {
   return `R$ ${v.toFixed(2).replace(".", ",")}`;
 }
-
 function buscarProduto(nome) {
   for (const cat of menuData) {
     const prod = cat.itens.find(i => i.nome === nome);
@@ -175,13 +146,11 @@ function buscarProduto(nome) {
   }
   return null;
 }
-
 function precoUnitario(nome, qtde) {
   const prod = buscarProduto(nome);
   if (!prod) return 0;
   return qtde >= 5 ? prod.precoAtacado : prod.precoVarejo;
 }
-
 function calcularTotalPedido() {
   let total = 0;
   carrinho.forEach(item => {
@@ -190,18 +159,14 @@ function calcularTotalPedido() {
   });
   return total;
 }
-
 function calcularTotalPagamentos() {
   return pagamentos.reduce((soma, p) => soma + p.valor, 0);
 }
 
-// ===========================
-// RENDERIZAÇÃO DO MENU
-// ===========================
+// MENU
 function renderMenu() {
   const container = document.getElementById("menu-container");
   container.innerHTML = "";
-
   menuData.forEach(cat => {
     const sec = document.createElement("div");
     sec.className = "menu-section";
@@ -220,16 +185,13 @@ function renderMenu() {
   });
 }
 
-// ===========================
 // CARRINHO
-// ===========================
 window.addCarrinho = (nome) => {
   const exist = carrinho.find(i => i.nome === nome);
   if (exist) exist.quantidade++;
   else carrinho.push({ nome, quantidade: 1 });
   renderCarrinho();
 };
-
 window.mudarQtde = (nome, delta) => {
   const item = carrinho.find(i => i.nome === nome);
   if (!item) return;
@@ -239,15 +201,12 @@ window.mudarQtde = (nome, delta) => {
   }
   renderCarrinho();
 };
-
 function renderCarrinho() {
   const container = document.getElementById("carrinho-container");
   container.innerHTML = "";
-
   carrinho.forEach(item => {
     const pUnit = precoUnitario(item.nome, item.quantidade);
     const sub = pUnit * item.quantidade;
-
     const row = document.createElement("div");
     row.className = "cart-row";
     row.innerHTML = `
@@ -261,22 +220,16 @@ function renderCarrinho() {
     `;
     container.appendChild(row);
   });
-
   const total = calcularTotalPedido();
   document.getElementById("total").innerText = formatarValor(total);
-
-  // sempre que o carrinho mudar, atualiza resumo de pagamento (caso já tenha pagamentos)
   renderPagamentos();
 }
 
-// ===========================
-// PAGAMENTOS MÚLTIPLOS
-// ===========================
+// PAGAMENTOS
 function renderPagamentos() {
   const lista = document.getElementById("lista-pagamentos");
   if (!lista) return;
   lista.innerHTML = "";
-
   pagamentos.forEach((p, idx) => {
     const div = document.createElement("div");
     div.className = "pagamento-item";
@@ -286,13 +239,10 @@ function renderPagamentos() {
     `;
     lista.appendChild(div);
   });
-
-  // Resumo: Total, Pago, Restante
   const totalPedido = calcularTotalPedido();
   if (totalPedido > 0) {
     const totalPago = calcularTotalPagamentos();
     const restante = totalPedido - totalPago;
-
     const resumo = document.createElement("div");
     resumo.className = "pagamento-resumo";
     resumo.textContent =
@@ -302,75 +252,60 @@ function renderPagamentos() {
     lista.appendChild(resumo);
   }
 }
-
 window.removerPagto = (idx) => {
   pagamentos.splice(idx, 1);
   renderPagamentos();
 };
-
 function adicionarPagamento() {
   const metodoSelect = document.getElementById("metodo-pagamento");
   const valorInput = document.getElementById("valor-pagamento");
-
   const metodo = metodoSelect.value;
   const valor = parseFloat((valorInput.value || "").replace(",", "."));
-
   const totalPedido = calcularTotalPedido();
   if (totalPedido <= 0) {
     alert("Adicione itens ao carrinho antes de registrar pagamentos.");
     return;
   }
-
+  const totalPagoAtual = calcularTotalPagamentos();
+  const restanteAtual = totalPedido - totalPagoAtual;
+  if (restanteAtual <= 0.01) {
+    alert("O pedido já está totalmente pago. Não é possível lançar mais pagamentos.");
+    valorInput.value = "";
+    return;
+  }
   if (!valor || valor <= 0) {
     alert("Informe um valor de pagamento válido.");
     return;
   }
-
-  const totalPagoAntes = calcularTotalPagamentos();
-  const restanteAntes = totalPedido - totalPagoAntes;
-
-  if (valor - restanteAntes > 0.01) {
-    alert(`O valor informado é maior que o restante (${formatarValor(restanteAntes)}).`);
+  if (valor - restanteAtual > 0.01) {
+    alert(`O valor informado é maior que o restante (${formatarValor(restanteAtual)}).`);
     return;
   }
-
-  // Lança o pagamento
   pagamentos.push({ metodo, valor });
   renderPagamentos();
-
-  // Calcula o novo restante e sugere automaticamente
   const totalPagoDepois = calcularTotalPagamentos();
   const restante = totalPedido - totalPagoDepois;
-
   if (restante > 0.01) {
-    // Sugere o restante no campo de valor
     valorInput.value = restante.toFixed(2).replace(".", ",");
-    // Sugere método diferente (por ex., Dinheiro) caso ainda não tenha sido usado
     if (pagamentos.length === 1 && metodo !== "Dinheiro") {
       metodoSelect.value = "Dinheiro";
     }
   } else {
-    // Pedido quitado
     valorInput.value = "";
   }
 }
 
-// ===========================
 // WHATSAPP
-// ===========================
 function montarMensagemWhatsApp() {
   const nome = document.getElementById("nome").value || "Não informado";
   const tipoAt = document.getElementById("tipo-atendimento").value;
   const end = document.getElementById("endereco").value || "Não informado";
   const obs = document.getElementById("observacoes").value || "";
-
   let msg = `*Pedido - Sorvetes Danionelle*%0A%0A`;
   msg += `*Cliente:* ${nome}%0A`;
   msg += `*Atendimento:* ${tipoAt}%0A`;
   msg += `*Endereço:* ${end}%0A%0A`;
-
   const totalPedido = calcularTotalPedido();
-
   if (carrinho.length === 0) {
     msg += `_Carrinho vazio_%0A`;
   } else {
@@ -383,7 +318,6 @@ function montarMensagemWhatsApp() {
     });
     msg += `%0A*Total:* ${formatarValor(totalPedido)}%0A`;
   }
-
   if (pagamentos.length > 0) {
     msg += `%0A*Pagamento:*%0A`;
     pagamentos.forEach(p => {
@@ -394,30 +328,24 @@ function montarMensagemWhatsApp() {
     msg += `%0A*Pago:* ${formatarValor(totalPago)}%0A`;
     msg += `*Restante:* ${formatarValor(Math.max(restante, 0))}%0A`;
   }
-
   if (obs) {
     msg += `%0A*Obs:* ${encodeURIComponent(obs)}%0A`;
   }
-
   return msg;
 }
-
 function enviarWhatsApp() {
   const mensagem = montarMensagemWhatsApp();
-  const numero = "551147464394"; // Ajuste se mudar o número da loja
+  const numero = "551147464394";
   const url = `https://wa.me/${numero}?text=${mensagem}`;
   window.open(url, "_blank");
 }
 
-// ===========================
-// RECIBO IMPRESSO (58mm)
-// ===========================
+// RECIBO
 function imprimirRecibo() {
   if (carrinho.length === 0) {
     alert("Carrinho vazio. Adicione itens antes de imprimir.");
     return;
   }
-
   const agora = new Date();
   document.getElementById("recibo-data").innerText = agora.toLocaleString("pt-BR");
   document.getElementById("recibo-id").innerText = "PEDIDO #" + agora.getTime().toString().slice(-5);
@@ -428,13 +356,11 @@ function imprimirRecibo() {
   const itensDiv = document.getElementById("recibo-itens-lista");
   itensDiv.innerHTML = "";
   let total = 0;
-
   carrinho.forEach(item => {
     const pUnit = precoUnitario(item.nome, item.quantidade);
     const sub = pUnit * item.quantidade;
     total += sub;
     const tipoPreco = item.quantidade >= 5 ? "ATACADO" : "VAREJO";
-
     const p = document.createElement("p");
     p.textContent = `${item.quantidade}x ${item.nome} (${tipoPreco}) - ${formatarValor(sub)}`;
     itensDiv.appendChild(p);
@@ -448,7 +374,6 @@ function imprimirRecibo() {
       linha.textContent = `${p.metodo}: ${formatarValor(p.valor)}`;
       pagtosDiv.appendChild(linha);
     });
-
     const totalPago = calcularTotalPagamentos();
     const restante = total - totalPago;
     const resumoPag = document.createElement("p");
@@ -456,25 +381,38 @@ function imprimirRecibo() {
       `Pago: ${formatarValor(totalPago)} | Restante: ${formatarValor(Math.max(restante, 0))}`;
     pagtosDiv.appendChild(resumoPag);
   }
-
   document.getElementById("recibo-total").innerText = formatarValor(total);
   window.print();
 }
 
-// ===========================
+// NOVO PEDIDO
+function novoPedido() {
+  if (!confirm("Iniciar um novo pedido? Isso vai limpar carrinho, pagamentos e dados do cliente.")) {
+    return;
+  }
+  carrinho = [];
+  pagamentos = [];
+  renderCarrinho();
+  renderPagamentos();
+  document.getElementById("nome").value = "";
+  document.getElementById("tipo-atendimento").value = "Retirada no local";
+  document.getElementById("endereco").value = "";
+  document.getElementById("observacoes").value = "";
+  const valorPagto = document.getElementById("valor-pagamento");
+  if (valorPagto) valorPagto.value = "";
+}
+
 // INICIALIZAÇÃO
-// ===========================
 document.addEventListener("DOMContentLoaded", () => {
   renderMenu();
   renderCarrinho();
   renderPagamentos();
-
   const btnAddPagto = document.getElementById("btn-add-pagamento");
   if (btnAddPagto) btnAddPagto.addEventListener("click", adicionarPagamento);
-
   const btnEnviar = document.getElementById("btn-enviar");
   if (btnEnviar) btnEnviar.addEventListener("click", enviarWhatsApp);
-
   const btnImprimir = document.getElementById("btn-imprimir");
   if (btnImprimir) btnImprimir.addEventListener("click", imprimirRecibo);
+  const btnNovoPedido = document.getElementById("btn-novo-pedido");
+  if (btnNovoPedido) btnNovoPedido.addEventListener("click", novoPedido);
 });
