@@ -3,146 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sorvetes Danionelle - Cardápio</title>
+  <title>Cardápio - Sorvetes Danionelle</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="header">
-    <img class="logo-img" src="logo.png" alt="Sorvetes Danionelle" />
-    <div class="header-text">
-      <h1>Sorvetes Danionelle</h1>
-      <p class="header-info">Cardápio digital para pedidos via WhatsApp</p>
-      <p class="header-info">Distribuidora: Alameda Fernando Costa, 481 – Suzano – SP</p>
-      <p class="header-info">Tel: (11) 4746-4394 · (11) 4759-1999</p>
-
-      <!-- Link discreto para ativar modo atendente manualmente (opcional) -->
-      <button id="btn-abrir-atendente" class="btn-link-atendente" type="button" aria-label="Abrir área do atendente">
-        Área do atendente
-      </button>
-    </div>
-  </header>
-
-  <main class="main-container">
-    <section class="menu-wrapper">
-      <h2 class="section-title">Cardápio de Sorvetes</h2>
-      <p class="section-subtitle">A partir de <strong>5 unidades</strong> do mesmo item, aplica-se <strong>preço de atacado</strong>.</p>
-      <div id="menu-container"></div>
-    </section>
-
-    <aside class="cart-wrapper">
-      <h2 class="section-title">Carrinho</h2>
-
-      <div id="carrinho-container" class="carrinho-container"></div>
-
-      <div class="cart-total-row">
-        <span>Total Pedido:</span>
-        <span id="total">R$ 0,00</span>
+  <div id="app-cliente">
+    <header class="header">
+      <img src="images/logo-danionelle.png" alt="Sorvetes Danionelle" class="logo-img" />
+      <div class="header-text">
+        <h1>Sorvetes Danionelle</h1>
+        <p>Cardápio digital para pedidos via WhatsApp</p>
+        <p class="header-info">Distribuidora: Alameda Fernando Costa, 481 – Suzano – SP</p>
+        <p class="header-info">Tel: (11) 4746-4394 · (11) 4759-1999</p>
       </div>
+    </header>
 
-      <div class="pedido-form">
-        <h3 class="section-title" style="margin-top: 10px;">Dados do Cliente</h3>
+    <main class="main-container">
+      <section class="menu-wrapper">
+        <h2 class="section-title">Cardápio de Sorvetes</h2>
+        <p class="section-subtitle">A partir de <strong>5 unidades</strong> do mesmo item, aplica-se <strong>preço de atacado</strong>.</p>
+        <div id="menu-container"></div>
+      </section>
 
-        <label for="nome">Nome do cliente</label>
-        <input id="nome" type="text" placeholder="Ex.: Wesley" />
-
-        <label for="tipo-atendimento">Tipo de atendimento</label>
-        <select id="tipo-atendimento">
-          <option>Retirada no local</option>
-          <option>Entrega (delivery)</option>
-          <option>Consumo no local</option>
-        </select>
-
-        <label for="endereco">Endereço / ponto de referência</label>
-        <input id="endereco" type="text" placeholder="Ex.: Rua..., nº..., bairro..." />
-
-        <div class="pagamento-multi-box">
-          <h3 class="section-title">Formas de Pagamento</h3>
-
-          <div class="pagamento-inputs">
-            <select id="metodo-pagamento">
-              <option>Dinheiro</option>
-              <option>PIX</option>
-              <option>Débito</option>
-              <option>Crédito</option>
-            </select>
-
-            <input id="valor-pagamento" type="text" placeholder="Ex.: 10,00" />
-            <button id="btn-add-pagamento" class="btn-small" type="button">+</button>
-          </div>
-
-          <div id="lista-pagamentos" class="lista-pagamentos"></div>
+      <aside class="cart-wrapper">
+        <h2 class="section-title">Carrinho</h2>
+        <div id="carrinho-container" class="carrinho-container"></div>
+        <div class="cart-total-row">
+          <span>Total Pedido:</span>
+          <span id="total">R$ 0,00</span>
         </div>
 
-        <label for="observacoes">Observações</label>
-        <textarea id="observacoes" rows="3" placeholder="Ex.: sem gelo, entregar após 18h..."></textarea>
-      </div>
+        <h3 class="section-title form-title">Dados do Cliente</h3>
+        <form class="pedido-form">
+          <label for="nome">Nome do cliente</label>
+          <input type="text" id="nome" placeholder="Ex.: Maria da Silva" />
 
-      <div class="buttons-row">
-        <button id="btn-enviar" class="btn-whatsapp" type="button">Enviar WhatsApp</button>
+          <label for="tipo-atendimento">Tipo de atendimento</label>
+          <select id="tipo-atendimento">
+            <option value="Retirada no local">Retirada no local</option>
+            <option value="Entrega (delivery)">Entrega (delivery)</option>
+            <option value="Consumo no local">Consumo no local</option>
+          </select>
 
-        <!-- Somente atendente -->
-        <button id="btn-imprimir" class="btn-print atendente-only" type="button">Imprimir Recibo</button>
+          <label for="endereco">Endereço / ponto de referência</label>
+          <textarea id="endereco" rows="2" placeholder="Rua, número, bairro..."></textarea>
 
-        <button id="btn-novo-pedido" class="btn-novo" type="button">Novo Pedido</button>
-      </div>
+          <label>Formas de Pagamento</label>
+          <div class="pagamento-multi-box">
+            <div class="pagamento-inputs">
+              <select id="metodo-pagamento">
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="PIX">PIX</option>
+                <option value="Cartão de Débito">Débito</option>
+                <option value="Cartão de Crédito">Crédito</option>
+              </select>
+              <input type="number" id="valor-pagamento" step="0.01" placeholder="Valor R$" />
+              <button type="button" id="btn-add-pagamento" class="btn-small">+</button>
+            </div>
+            <div id="lista-pagamentos" class="lista-pagamentos"></div>
+          </div>
 
-      <!-- Área do atendente: sair do modo -->
-      <div class="print-id-box atendente-only">
-        <h3 class="section-title">Modo Atendente Ativo</h3>
-        <p class="section-subtitle">
-          Você está visualizando o pedido recebido. Clique em <strong>Imprimir Recibo</strong> acima.
-        </p>
-        <button id="btn-sair-atendente" class="btn-outline" type="button">Sair do modo atendente</button>
-      </div>
-    </aside>
-  </main>
+          <label for="observacoes">Observações</label>
+          <textarea id="observacoes" rows="2" placeholder="Ex.: Troco para R$ 50,00..."></textarea>
 
-  <!-- RECIBO (apenas impressão) -->
+          <div class="buttons-row">
+            <button id="btn-enviar" class="btn-whatsapp" type="button">Enviar Pedido no WhatsApp</button>
+            <button id="btn-novo-pedido" class="btn-novo" type="button">Novo Pedido</button>
+          </div>
+        </form>
+      </aside>
+    </main>
+  </div>
+
+  <div id="painel-impressao" class="painel-impressao" style="display: none;">
+    <div class="aviso-impressao">
+      <h2>Visualização do Pedido</h2>
+      <p>Este painel é exclusivo para o lojista imprimir o pedido.</p>
+      <button id="btn-imprimir-painel" class="btn-print" type="button">IMPRIMIR CUPOM (80mm)</button>
+      <button onclick="window.location.href=window.location.pathname" class="btn-novo" style="margin-top:10px">Voltar ao Cardápio</button>
+    </div>
+  </div>
+
   <div id="recibo" class="recibo">
     <div class="recibo-header">
       <h2>SORVETES DANIONELLE</h2>
       <p>Alameda Fernando Costa, 481 - Suzano</p>
       <p>(11) 4746-4394</p>
-      <p>--------------------------------</p>
-      <p id="recibo-data">--/--/---- --:--</p>
-      <p id="recibo-id">PEDIDO #-----</p>
-      <p>--------------------------------</p>
+      <p>------------------------------------------------</p>
+      <p><strong>PEDIDO: <span id="recibo-id" style="font-size: 1.2em;"></span></strong></p>
+      <p id="recibo-data"></p>
+      <p>------------------------------------------------</p>
     </div>
-
     <div class="recibo-cliente">
       <p><strong>CLIENTE:</strong> <span id="recibo-nome"></span></p>
       <p><strong>TIPO:</strong> <span id="recibo-tipo-atendimento"></span></p>
-
-      <!-- Endereço aparece só quando for entrega -->
-      <p id="recibo-endereco-linha"><strong>END:</strong> <span id="recibo-endereco"></span></p>
-
-      <p>--------------------------------</p>
+      <div id="box-endereco-recibo">
+        <p><strong>ENDEREÇO:</strong></p>
+        <p id="recibo-endereco"></p>
+      </div>
+      <p><strong>OBS:</strong> <span id="recibo-obs"></span></p>
+      <p>------------------------------------------------</p>
     </div>
-
     <div class="recibo-itens">
-      <p><strong>ITENS</strong></p>
-      <p>--------------------------------</p>
+      <p><strong>ITENS DO PEDIDO</strong></p>
       <div id="recibo-itens-lista"></div>
-      <p>--------------------------------</p>
+      <p>------------------------------------------------</p>
     </div>
-
     <div class="recibo-pagamentos">
       <p><strong>PAGAMENTO</strong></p>
-      <p>--------------------------------</p>
       <div id="recibo-pagamentos-lista"></div>
-      <p>--------------------------------</p>
+      <p>------------------------------------------------</p>
     </div>
-
-    <div class="recibo-obs" id="recibo-obs-box">
-      <p><strong>OBS:</strong> <span id="recibo-obs"></span></p>
-      <p>--------------------------------</p>
-    </div>
-
     <div class="recibo-total">
-      <p><strong>TOTAL:</strong> <span id="recibo-total"></span></p>
+      <p style="font-size: 1.2em;"><strong>TOTAL: <span id="recibo-total"></span></strong></p>
     </div>
-
     <div class="recibo-rodape">
+      <p>Documento sem valor fiscal</p>
       <p>Obrigado pela preferência!</p>
     </div>
   </div>
