@@ -125,6 +125,9 @@ const menuData = [
 
 let carrinho = [];
 let pagamentos = [];
+let modoImpressao = false; // Estado para saber se é loja ou impressão
+
+// --- UTILITÁRIOS ---
 
 function formatarValor(v) {
   return `R$ ${v.toFixed(2).replace(".", ",")}`;
@@ -157,8 +160,11 @@ function calcularTotalPagamentos() {
   return pagamentos.reduce((soma, p) => soma + p.valor, 0);
 }
 
+// --- RENDERIZAÇÃO DA LOJA (Cliente) ---
+
 function renderMenu() {
   const container = document.getElementById("menu-container");
+  if(!container) return; 
   container.innerHTML = "";
   menuData.forEach(cat => {
     const sec = document.createElement("div");
@@ -197,6 +203,7 @@ window.mudarQtde = (nome, delta) => {
 
 function renderCarrinho() {
   const container = document.getElementById("carrinho-container");
+  if(!container) return;
   container.innerHTML = "";
   carrinho.forEach(item => {
     const pUnit = precoUnitario(item.nome, item.quantidade);
@@ -257,27 +264,32 @@ function adicionarPagamento() {
   const metodo = metodoSelect.value;
   const valor = parseFloat((valorInput.value || "").replace(",", "."));
   const totalPedido = calcularTotalPedido();
+  
   if (totalPedido <= 0) {
     alert("Adicione itens ao carrinho antes de registrar pagamentos.");
     return;
   }
   const totalPagoAtual = calcularTotalPagamentos();
   const restanteAtual = totalPedido - totalPagoAtual;
+
   if (restanteAtual <= 0.01) {
-    alert("O pedido já está totalmente pago. Não é possível lançar mais pagamentos.");
+    alert("O pedido já está totalmente pago.");
     valorInput.value = "";
     return;
   }
   if (!valor || valor <= 0) {
-    alert("Informe um valor de pagamento válido.");
+    alert("Informe um valor válido.");
     return;
   }
   if (valor - restanteAtual > 0.01) {
     alert(`O valor informado é maior que o restante (${formatarValor(restanteAtual)}).`);
     return;
   }
+
   pagamentos.push({ metodo, valor });
   renderPagamentos();
+  
+  // Sugerir o restante no input
   const totalPagoDepois = calcularTotalPagamentos();
   const restante = totalPedido - totalPagoDepois;
   if (restante > 0.01) {
@@ -290,121 +302,199 @@ function adicionarPagamento() {
   }
 }
 
-function montarMensagemWhatsApp() {
-  const nome = document.getElementById("nome").value || "Não informado";
-  const tipoAt = document.getElementById("tipo-atendimento").value;
-  const end = document.getElementById("endereco").value || "Não informado";
-  const obs = document.getElementById("observacoes").value || "";
-  let msg = `*Pedido - Sorvetes Danionelle*%0A%0A`;
-  msg += `*Cliente:* ${nome}%0A`;
-  msg += `*Atendimento:* ${tipoAt}%0A`;
-  msg += `*Endereço:* ${end}%0A%0A`;
-  const totalPedido = calcularTotalPedido();
-  if (carrinho.length === 0) {
-    msg += `_Carrinho vazio_%0A`;
-  } else {
-    msg += `*Itens:*%0A`;
-    carrinho.forEach(item => {
-      const pUnit = precoUnitario(item.nome, item.quantidade);
-      const sub = pUnit * item.quantidade;
-      const tipoPreco = item.quantidade >= 5 ? "Atacado" : "Varejo";
-      msg += `- ${item.quantidade}x ${item.nome} (${tipoPreco}) - ${formatarValor(sub)}%0A`;
-    });
-    msg += `%0A*Total:* ${formatarValor(totalPedido)}%0A`;
+// --- LÓGICA DE ID ÚNICO E LINK MÁGICO ---
+
+function gerarIdUnico() {
+  // Gera algo como: 4A1B (4 digitos hexadecimais aleatorios + timestamp curto)
+  // Para ficar amigável, vamos usar horaMinuto + 2 aleatórios
+  const agora = new Date();
+  const hora = agora.getHours().toString().padStart(2,'0');
+  const min = agora.getMinutes().toString().padStart(2,'0');
+  const random = Math.floor(Math.random() * 90 + 10); // 10 a 99
+  return `#${hora}${min}-${random}`;
+}
+
+function codificarPedido(dados) {
+  // Converte objeto JSON em string Base64 segura para URL
+  // encodeURIComponent garante que acentos não quebrem o btoa
+  const jsonStr = JSON.stringify(dados);
+  return btoa(encodeURIComponent(jsonStr));
+}
+
+function decodificarPedido(hash) {
+  try {
+    const jsonStr = decodeURIComponent(atob(hash));
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    console.error("Erro ao decodificar pedido", e);
+    return null;
   }
+}
+
+function montarMensagemWhatsApp(dadosPedido) {
+  // dadosPedido contem: { id, cliente, tipo, endereco, carrinho, pagamentos, total, obs }
+  const { id, cliente, tipo, endereco, carrinho, pagamentos, total, obs } = dadosPedido;
+
+  // Cria o link mágico
+  const baseUrl = window.location.href.split('?')[0];
+  const payload = codificarPedido(dadosPedido);
+  const linkMagico = `${baseUrl}?dado_pedido=${payload}`;
+
+  let msg = `*Pedido ${id} - Sorvetes Danionelle*%0A`;
+  msg += `--------------------------------%0A`;
+  msg += `*Cliente:* ${cliente}%0A`;
+  msg += `*Tipo:* ${tipo}%0A`;
+  if(endereco) msg += `*Endereço:* ${endereco}%0A`;
+  msg += `--------------------------------%0A`;
+  
+  carrinho.forEach(item => {
+    const pUnit = precoUnitario(item.nome, item.quantidade);
+    const sub = pUnit * item.quantidade;
+    const tipoPr = item.quantidade >= 5 ? "Atacado" : "Varejo";
+    msg += `${item.quantidade}x ${item.nome} (${tipoPr}) = ${formatarValor(sub)}%0A`;
+  });
+  
+  msg += `--------------------------------%0A`;
+  msg += `*TOTAL: ${formatarValor(total)}*%0A`;
+  
   if (pagamentos.length > 0) {
-    msg += `%0A*Pagamento:*%0A`;
-    pagamentos.forEach(p => {
-      msg += `- ${p.metodo}: ${formatarValor(p.valor)}%0A`;
-    });
-    const totalPago = calcularTotalPagamentos();
-    const restante = totalPedido - totalPago;
-    msg += `%0A*Pago:* ${formatarValor(totalPago)}%0A`;
-    msg += `*Restante:* ${formatarValor(Math.max(restante, 0))}%0A`;
+    msg += `*Pagamentos:*%0A`;
+    pagamentos.forEach(p => msg += ` - ${p.metodo}: ${formatarValor(p.valor)}%0A`);
   }
-  if (obs) {
-    msg += `%0A*Obs:* ${encodeURIComponent(obs)}%0A`;
-  }
+  
+  if (obs) msg += `*Obs:* ${obs}%0A`;
+  
+  msg += `%0A📄 *Link para Imprimir Cupom:*%0A${linkMagico}`;
+  
   return msg;
 }
 
 function enviarWhatsApp() {
-  const mensagem = montarMensagemWhatsApp();
-  const numero = "551147464394";
+  if (carrinho.length === 0) {
+    alert("O carrinho está vazio!");
+    return;
+  }
+
+  // Coleta dados
+  const dados = {
+    id: gerarIdUnico(),
+    dataHora: new Date().toLocaleString("pt-BR"),
+    cliente: document.getElementById("nome").value || "Não informado",
+    tipo: document.getElementById("tipo-atendimento").value,
+    endereco: document.getElementById("endereco").value || "",
+    obs: document.getElementById("observacoes").value || "",
+    carrinho: carrinho, // Copia do array global
+    pagamentos: pagamentos,
+    total: calcularTotalPedido()
+  };
+
+  const mensagem = montarMensagemWhatsApp(dados);
+  const numero = "551147464394"; 
   const url = `https://wa.me/${numero}?text=${mensagem}`;
   window.open(url, "_blank");
 }
 
-function imprimirRecibo() {
-  if (carrinho.length === 0) {
-    alert("Carrinho vazio. Adicione itens antes de imprimir.");
-    return;
-  }
-  const agora = new Date();
-  document.getElementById("recibo-data").innerText = agora.toLocaleString("pt-BR");
-  document.getElementById("recibo-id").innerText = "PEDIDO #" + agora.getTime().toString().slice(-5);
-  document.getElementById("recibo-nome").innerText = document.getElementById("nome").value || "Consumidor";
-  document.getElementById("recibo-tipo-atendimento").innerText = document.getElementById("tipo-atendimento").value;
-  document.getElementById("recibo-endereco").innerText = document.getElementById("endereco").value || "N/A";
-
-  const itensDiv = document.getElementById("recibo-itens-lista");
-  itensDiv.innerHTML = "";
-  let total = 0;
-  carrinho.forEach(item => {
-    const pUnit = precoUnitario(item.nome, item.quantidade);
-    const sub = pUnit * item.quantidade;
-    total += sub;
-    const tipoPreco = item.quantidade >= 5 ? "ATACADO" : "VAREJO";
-    const p = document.createElement("p");
-    p.textContent = `${item.quantidade}x ${item.nome} (${tipoPreco}) - ${formatarValor(sub)}`;
-    itensDiv.appendChild(p);
-  });
-
-  const pagtosDiv = document.getElementById("recibo-pagamentos-lista");
-  if (pagtosDiv) {
-    pagtosDiv.innerHTML = "";
-    pagamentos.forEach(p => {
-      const linha = document.createElement("p");
-      linha.textContent = `${p.metodo}: ${formatarValor(p.valor)}`;
-      pagtosDiv.appendChild(linha);
-    });
-    const totalPago = calcularTotalPagamentos();
-    const restante = total - totalPago;
-    const resumoPag = document.createElement("p");
-    resumoPag.textContent =
-      `Pago: ${formatarValor(totalPago)} | Restante: ${formatarValor(Math.max(restante, 0))}`;
-    pagtosDiv.appendChild(resumoPag);
-  }
-  document.getElementById("recibo-total").innerText = formatarValor(total);
-  window.print();
-}
-
 function novoPedido() {
-  if (!confirm("Iniciar um novo pedido? Isso vai limpar carrinho, pagamentos e dados do cliente.")) {
-    return;
-  }
+  if (!confirm("Limpar tudo e iniciar novo pedido?")) return;
   carrinho = [];
   pagamentos = [];
   renderCarrinho();
   renderPagamentos();
   document.getElementById("nome").value = "";
-  document.getElementById("tipo-atendimento").value = "Retirada no local";
   document.getElementById("endereco").value = "";
   document.getElementById("observacoes").value = "";
-  const valorPagto = document.getElementById("valor-pagamento");
-  if (valorPagto) valorPagto.value = "";
+  document.getElementById("valor-pagamento").value = "";
 }
 
+// --- FUNÇÃO DE IMPRESSÃO (Modo Lojista) ---
+
+function prepararImpressao(dados) {
+  // Preenche o recibo oculto com os dados vindos do Link
+  document.getElementById("recibo-id").innerText = dados.id;
+  document.getElementById("recibo-data").innerText = dados.dataHora;
+  document.getElementById("recibo-nome").innerText = dados.cliente;
+  document.getElementById("recibo-tipo-atendimento").innerText = dados.tipo;
+  document.getElementById("recibo-endereco").innerText = dados.endereco || "N/A";
+  document.getElementById("recibo-obs").innerText = dados.obs || "-";
+  
+  // Itens
+  const itensDiv = document.getElementById("recibo-itens-lista");
+  itensDiv.innerHTML = "";
+  dados.carrinho.forEach(item => {
+    // Atenção: Recalculamos preço unitario para garantir, mas poderíamos ter salvo no objeto
+    // Aqui assumimos que a regra de preço não mudou entre o envio e a impressão
+    const pUnit = precoUnitario(item.nome, item.quantidade); 
+    const sub = pUnit * item.quantidade;
+    const tipoPr = item.quantidade >= 5 ? "ATACADO" : "VAREJO";
+    
+    const p = document.createElement("p");
+    p.textContent = `${item.quantidade}x ${item.nome} (${tipoPr}) = ${formatarValor(sub)}`;
+    itensDiv.appendChild(p);
+  });
+
+  // Pagamentos
+  const pagtosDiv = document.getElementById("recibo-pagamentos-lista");
+  pagtosDiv.innerHTML = "";
+  let totalPago = 0;
+  dados.pagamentos.forEach(pg => {
+    totalPago += pg.valor;
+    const p = document.createElement("p");
+    p.textContent = `${pg.metodo}: ${formatarValor(pg.valor)}`;
+    pagtosDiv.appendChild(p);
+  });
+
+  // Resumo Pagamento
+  const restante = dados.total - totalPago;
+  const resumo = document.createElement("p");
+  resumo.style.fontWeight = "bold";
+  resumo.style.marginTop = "5px";
+  resumo.textContent = `Pago: ${formatarValor(totalPago)} | Resta: ${formatarValor(Math.max(0, restante))}`;
+  pagtosDiv.appendChild(resumo);
+
+  document.getElementById("recibo-total").innerText = formatarValor(dados.total);
+}
+
+// --- INICIALIZAÇÃO ---
+
 document.addEventListener("DOMContentLoaded", () => {
-  renderMenu();
-  renderCarrinho();
-  renderPagamentos();
-  const btnAddPagto = document.getElementById("btn-add-pagamento");
-  if (btnAddPagto) btnAddPagto.addEventListener("click", adicionarPagamento);
-  const btnEnviar = document.getElementById("btn-enviar");
-  if (btnEnviar) btnEnviar.addEventListener("click", enviarWhatsApp);
-  const btnImprimir = document.getElementById("btn-imprimir");
-  if (btnImprimir) btnImprimir.addEventListener("click", imprimirRecibo);
-  const btnNovoPedido = document.getElementById("btn-novo-pedido");
-  if (btnNovoPedido) btnNovoPedido.addEventListener("click", novoPedido);
+  // Verifica se tem dados na URL (Modo Impressão)
+  const params = new URLSearchParams(window.location.search);
+  const dadosHash = params.get("dado_pedido");
+
+  if (dadosHash) {
+    // MODO IMPRESSÃO
+    modoImpressao = true;
+    const dadosPedido = decodificarPedido(dadosHash);
+    
+    if (dadosPedido) {
+      // Esconde app do cliente
+      document.getElementById("app-cliente").style.display = "none";
+      // Mostra painel de impressão
+      document.getElementById("painel-impressao").style.display = "flex";
+      
+      // Preenche o recibo
+      prepararImpressao(dadosPedido);
+
+      // Configura botão de imprimir
+      document.getElementById("btn-imprimir-painel").onclick = () => window.print();
+    } else {
+      alert("Erro ao ler dados do pedido. O link pode estar quebrado.");
+      window.location.href = window.location.pathname; // volta pro inicio limpo
+    }
+
+  } else {
+    // MODO CLIENTE NORMAL
+    renderMenu();
+    renderCarrinho();
+    renderPagamentos();
+
+    const btnAddPagto = document.getElementById("btn-add-pagamento");
+    if (btnAddPagto) btnAddPagto.addEventListener("click", adicionarPagamento);
+    
+    const btnEnviar = document.getElementById("btn-enviar");
+    if (btnEnviar) btnEnviar.addEventListener("click", enviarWhatsApp);
+    
+    const btnNovo = document.getElementById("btn-novo-pedido");
+    if (btnNovo) btnNovo.addEventListener("click", novoPedido);
+  }
 });
