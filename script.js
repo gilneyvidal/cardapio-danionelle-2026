@@ -125,21 +125,9 @@ const menuData = [
 
 let carrinho = [];
 let pagamentos = [];
+let modoImpressao = false; // Estado para saber se é loja ou impressão
 
-// Cache do último pedido gerado (para imprimir/reenviar com o MESMO ID)
-let cachePedidoAtual = null;
-
-// Modo atendente
-const STORAGE_KEY_ATENDENTE = "danionelle_modo_atendente_v1";
-
-// PIN do atendente (para ativação manual)
-const PIN_ATENDENTE = "2468";
-
-// Prefixo do ID para impressão
-const PREFIXO_ID_IMPRESSAO = "DN1:";
-
-// URL base do site (ajuste se necessário)
-const URL_BASE_SITE = "https://gilneyvidal.github.io/cardapio-danionelle-2026/";
+// --- UTILITÁRIOS ---
 
 function formatarValor(v) {
   return `R$ ${v.toFixed(2).replace(".", ",")}`;
@@ -172,25 +160,25 @@ function calcularTotalPagamentos() {
   return pagamentos.reduce((soma, p) => soma + p.valor, 0);
 }
 
+// --- RENDERIZAÇÃO DA LOJA (Cliente) ---
+
 function renderMenu() {
   const container = document.getElementById("menu-container");
+  if(!container) return; 
   container.innerHTML = "";
-
   menuData.forEach(cat => {
     const sec = document.createElement("div");
     sec.className = "menu-section";
-
     let html = `<h3>${cat.categoria}</h3>`;
     cat.itens.forEach(item => {
       html += `
         <div class="item">
-          <div>${item.nome}</div>
-          <div><strong>${formatarValor(item.precoVarejo)}</strong></div>
+          <span>${item.nome}</span>
+          <b>${formatarValor(item.precoVarejo)}</b>
           <button class="btn-add" onclick="addCarrinho('${item.nome.replace(/'/g, "\\'")}')">+</button>
         </div>
       `;
     });
-
     sec.innerHTML = html;
     container.appendChild(sec);
   });
@@ -200,46 +188,39 @@ window.addCarrinho = (nome) => {
   const exist = carrinho.find(i => i.nome === nome);
   if (exist) exist.quantidade++;
   else carrinho.push({ nome, quantidade: 1 });
-
-  cachePedidoAtual = null;
   renderCarrinho();
 };
 
 window.mudarQtde = (nome, delta) => {
   const item = carrinho.find(i => i.nome === nome);
   if (!item) return;
-
   item.quantidade += delta;
   if (item.quantidade <= 0) {
     carrinho = carrinho.filter(i => i.nome !== nome);
   }
-
-  cachePedidoAtual = null;
   renderCarrinho();
 };
 
 function renderCarrinho() {
   const container = document.getElementById("carrinho-container");
+  if(!container) return;
   container.innerHTML = "";
-
   carrinho.forEach(item => {
     const pUnit = precoUnitario(item.nome, item.quantidade);
     const sub = pUnit * item.quantidade;
-
     const row = document.createElement("div");
     row.className = "cart-row";
     row.innerHTML = `
-      <div>${item.quantidade}x ${item.nome}</div>
+      <span>${item.quantidade}x ${item.nome}</span>
       <div>
         <button onclick="mudarQtde('${item.nome.replace(/'/g, "\\'")}', -1)">-</button>
-        <span style="padding: 0 8px;">${item.quantidade}</span>
+        <span>${item.quantidade}</span>
         <button onclick="mudarQtde('${item.nome.replace(/'/g, "\\'")}', 1)">+</button>
       </div>
-      <div>${formatarValor(sub)}</div>
+      <span>${formatarValor(sub)}</span>
     `;
     container.appendChild(row);
   });
-
   const total = calcularTotalPedido();
   document.getElementById("total").innerText = formatarValor(total);
   renderPagamentos();
@@ -248,9 +229,7 @@ function renderCarrinho() {
 function renderPagamentos() {
   const lista = document.getElementById("lista-pagamentos");
   if (!lista) return;
-
   lista.innerHTML = "";
-
   pagamentos.forEach((p, idx) => {
     const div = document.createElement("div");
     div.className = "pagamento-item";
@@ -260,68 +239,59 @@ function renderPagamentos() {
     `;
     lista.appendChild(div);
   });
-
   const totalPedido = calcularTotalPedido();
   if (totalPedido > 0) {
     const totalPago = calcularTotalPagamentos();
     const restante = totalPedido - totalPago;
-
     const resumo = document.createElement("div");
     resumo.className = "pagamento-resumo";
     resumo.textContent =
       `Total: ${formatarValor(totalPedido)} | ` +
       `Pago: ${formatarValor(totalPago)} | ` +
       `Restante: ${formatarValor(Math.max(restante, 0))}`;
-
     lista.appendChild(resumo);
   }
 }
 
 window.removerPagto = (idx) => {
   pagamentos.splice(idx, 1);
-  cachePedidoAtual = null;
   renderPagamentos();
 };
 
 function adicionarPagamento() {
   const metodoSelect = document.getElementById("metodo-pagamento");
   const valorInput = document.getElementById("valor-pagamento");
-
   const metodo = metodoSelect.value;
   const valor = parseFloat((valorInput.value || "").replace(",", "."));
-
   const totalPedido = calcularTotalPedido();
+  
   if (totalPedido <= 0) {
     alert("Adicione itens ao carrinho antes de registrar pagamentos.");
     return;
   }
-
   const totalPagoAtual = calcularTotalPagamentos();
   const restanteAtual = totalPedido - totalPagoAtual;
 
   if (restanteAtual <= 0.01) {
-    alert("O pedido já está totalmente pago. Não é possível lançar mais pagamentos.");
+    alert("O pedido já está totalmente pago.");
     valorInput.value = "";
     return;
   }
-
   if (!valor || valor <= 0) {
-    alert("Informe um valor de pagamento válido.");
+    alert("Informe um valor válido.");
     return;
   }
-
   if (valor - restanteAtual > 0.01) {
     alert(`O valor informado é maior que o restante (${formatarValor(restanteAtual)}).`);
     return;
   }
 
   pagamentos.push({ metodo, valor });
-  cachePedidoAtual = null;
   renderPagamentos();
-
+  
+  // Sugerir o restante no input
   const totalPagoDepois = calcularTotalPagamentos();
   const restante = totalPedido - totalPagoDepois;
-
   if (restante > 0.01) {
     valorInput.value = restante.toFixed(2).replace(".", ",");
     if (pagamentos.length === 1 && metodo !== "Dinheiro") {
@@ -332,416 +302,201 @@ function adicionarPagamento() {
   }
 }
 
-/* =========================
-   MODO ATENDENTE (UI)
-   ========================= */
+// --- LÓGICA DE ID ÚNICO E LINK MÁGICO ---
 
-function isModoAtendente() {
+function gerarIdUnico() {
+  // Gera algo como: #1015-42 (HoraMinuto-Random)
+  const agora = new Date();
+  const hora = agora.getHours().toString().padStart(2,'0');
+  const min = agora.getMinutes().toString().padStart(2,'0');
+  const random = Math.floor(Math.random() * 90 + 10); // 10 a 99
+  return `#${hora}${min}-${random}`;
+}
+
+function codificarPedido(dados) {
+  // Converte objeto JSON em string Base64 segura para URL
+  const jsonStr = JSON.stringify(dados);
+  return btoa(encodeURIComponent(jsonStr));
+}
+
+function decodificarPedido(hash) {
   try {
-    return localStorage.getItem(STORAGE_KEY_ATENDENTE) === "1";
+    const jsonStr = decodeURIComponent(atob(hash));
+    return JSON.parse(jsonStr);
   } catch (e) {
-    return false;
-  }
-}
-
-function setModoAtendente(ativo) {
-  try {
-    localStorage.setItem(STORAGE_KEY_ATENDENTE, ativo ? "1" : "0");
-  } catch (e) {}
-
-  document.body.classList.toggle("modo-atendente", !!ativo);
-}
-
-function abrirModoAtendente() {
-  const pin = prompt("Digite o PIN do atendente:");
-  if (pin === null) return;
-
-  if (String(pin).trim() !== PIN_ATENDENTE) {
-    alert("PIN inválido.");
-    return;
-  }
-
-  setModoAtendente(true);
-  alert("Modo atendente ativado. Os botões de impressão já estão disponíveis.");
-}
-
-function sairModoAtendente() {
-  setModoAtendente(false);
-  alert("Modo atendente desativado.");
-  
-  // Limpa URL se tiver parâmetro print
-  if (window.location.search.includes("print=")) {
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-}
-
-/* =========================
-   ID ÚNICO + ID PARA IMPRESSÃO (DN1:)
-   ========================= */
-
-function pad2(n) {
-  return String(n).padStart(2, "0");
-}
-
-function gerarIdCurtoPedido() {
-  const d = new Date();
-  const yy = String(d.getFullYear()).slice(-2);
-  const mm = pad2(d.getMonth() + 1);
-  const dd = pad2(d.getDate());
-  const hh = pad2(d.getHours());
-  const mi = pad2(d.getMinutes());
-  const ss = pad2(d.getSeconds());
-  const rand = Math.random().toString(36).toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
-  return `DN-${yy}${mm}${dd}-${hh}${mi}${ss}-${rand}`;
-}
-
-function base64UrlEncodeUtf8(str) {
-  const bytes = new TextEncoder().encode(str);
-  let bin = "";
-  bytes.forEach(b => { bin += String.fromCharCode(b); });
-  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
-}
-
-function base64UrlDecodeUtf8(b64url) {
-  let b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
-  while (b64.length % 4 !== 0) b64 += "=";
-  const bin = atob(b64);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return new TextDecoder().decode(bytes);
-}
-
-function gerarIdImpressao(pedidoObj) {
-  const json = JSON.stringify(pedidoObj);
-  return `${PREFIXO_ID_IMPRESSAO}${base64UrlEncodeUtf8(json)}`;
-}
-
-function decodificarIdImpressao(idTexto) {
-  const raw = (idTexto || "").trim();
-  if (!raw.startsWith(PREFIXO_ID_IMPRESSAO)) return null;
-
-  const payload = raw.slice(PREFIXO_ID_IMPRESSAO.length).trim();
-  if (!payload) return null;
-
-  try {
-    const json = base64UrlDecodeUtf8(payload);
-    const obj = JSON.parse(json);
-    return obj;
-  } catch (e) {
+    console.error("Erro ao decodificar pedido", e);
     return null;
   }
 }
 
-function coletarPedidoAtual() {
-  const agora = new Date();
+function montarTextoMensagem(dadosPedido) {
+  // OBS: Aqui usamos \n para pular linha. O encodeURIComponent fará a mágica depois.
+  const { id, cliente, tipo, endereco, carrinho, pagamentos, total, obs } = dadosPedido;
 
-  const nome = document.getElementById("nome").value || "Não informado";
-  const tipoAt = document.getElementById("tipo-atendimento").value;
-  const end = document.getElementById("endereco").value || "Não informado";
-  const obs = document.getElementById("observacoes").value || "";
+  // Cria o link mágico
+  const baseUrl = window.location.href.split('?')[0];
+  const payload = codificarPedido(dadosPedido);
+  const linkMagico = `${baseUrl}?dado_pedido=${payload}`;
 
-  const itens = carrinho.map(item => {
+  let msg = `*Pedido ${id} - Sorvetes Danionelle*\n`;
+  msg += `--------------------------------\n`;
+  msg += `*Cliente:* ${cliente}\n`;
+  msg += `*Tipo:* ${tipo}\n`;
+  if(endereco) msg += `*Endereço:* ${endereco}\n`;
+  msg += `--------------------------------\n`;
+  
+  carrinho.forEach(item => {
     const pUnit = precoUnitario(item.nome, item.quantidade);
     const sub = pUnit * item.quantidade;
-    const tipoPreco = item.quantidade >= 5 ? "Atacado" : "Varejo";
-    return { nome: item.nome, quantidade: item.quantidade, tipoPreco, precoUnit: pUnit, subtotal: sub };
+    const tipoPr = item.quantidade >= 5 ? "Atacado" : "Varejo";
+    msg += `${item.quantidade}x ${item.nome} (${tipoPr}) = ${formatarValor(sub)}\n`;
   });
-
-  const total = calcularTotalPedido();
-
-  return {
-    versao: 1,
-    createdAtISO: agora.toISOString(),
-    createdAtLocal: agora.toLocaleString("pt-BR"),
-    cliente: { nome, tipoAtendimento: tipoAt, endereco: end },
-    itens,
-    pagamentos: pagamentos.map(p => ({ metodo: p.metodo, valor: p.valor })),
-    observacoes: obs,
-    total
-  };
-}
-
-function fingerprintPedido(pedido) {
-  const mini = {
-    cliente: pedido.cliente,
-    itens: pedido.itens.map(i => [i.nome, i.quantidade]),
-    pagamentos: pedido.pagamentos,
-    observacoes: pedido.observacoes,
-    total: pedido.total
-  };
-  return base64UrlEncodeUtf8(JSON.stringify(mini));
-}
-
-function obterOuGerarPedidoComIds() {
-  if (carrinho.length === 0) {
-    alert("Carrinho vazio. Adicione itens antes de gerar/enviar/imprimir.");
-    return null;
+  
+  msg += `--------------------------------\n`;
+  msg += `*TOTAL: ${formatarValor(total)}*\n`;
+  
+  if (pagamentos.length > 0) {
+    msg += `*Pagamentos:*\n`;
+    pagamentos.forEach(p => msg += ` - ${p.metodo}: ${formatarValor(p.valor)}\n`);
   }
-
-  const pedidoBase = coletarPedidoAtual();
-  const fp = fingerprintPedido(pedidoBase);
-
-  if (cachePedidoAtual && cachePedidoAtual.fingerprint === fp) {
-    return cachePedidoAtual;
-  }
-
-  const idCurto = gerarIdCurtoPedido();
-  const pedidoCompleto = { ...pedidoBase, idCurto };
-  const idImpressao = gerarIdImpressao(pedidoCompleto);
-
-  pedidoCompleto.idImpressao = idImpressao;
-
-  cachePedidoAtual = { fingerprint: fp, idCurto, idImpressao, pedido: pedidoCompleto };
-  return cachePedidoAtual;
-}
-
-/* =========================
-   WhatsApp
-   ========================= */
-
-function montarMensagemWhatsApp(pedidoObj) {
-  const linhas = [];
-
-  linhas.push("*Pedido - Sorvetes Danionelle*");
-  linhas.push("");
-
-  linhas.push(`*ID do Pedido:* ${pedidoObj.idCurto}`);
-  linhas.push("");
-
-  // Link clicável para impressão
-  const linkImpressao = `${URL_BASE_SITE}?print=${encodeURIComponent(pedidoObj.idImpressao)}`;
-  linhas.push(`*Link para Impressão (clique para abrir):*`);
-  linhas.push(linkImpressao);
-  linhas.push("");
-
-  linhas.push(`*Cliente:* ${pedidoObj.cliente.nome}`);
-  linhas.push(`*Atendimento:* ${pedidoObj.cliente.tipoAtendimento}`);
-  linhas.push(`*Endereço:* ${pedidoObj.cliente.endereco}`);
-  linhas.push("");
-
-  if (!pedidoObj.itens || pedidoObj.itens.length === 0) {
-    linhas.push("_Carrinho vazio_");
-  } else {
-    linhas.push("*Itens:*");
-    pedidoObj.itens.forEach(i => {
-      linhas.push(`- ${i.quantidade}x ${i.nome} (${i.tipoPreco}) - ${formatarValor(i.subtotal)}`);
-    });
-    linhas.push("");
-    linhas.push(`*Total:* ${formatarValor(pedidoObj.total)}`);
-  }
-
-  if (pedidoObj.pagamentos && pedidoObj.pagamentos.length > 0) {
-    linhas.push("");
-    linhas.push("*Pagamento:*");
-    pedidoObj.pagamentos.forEach(p => linhas.push(`- ${p.metodo}: ${formatarValor(p.valor)}`));
-    const totalPago = pedidoObj.pagamentos.reduce((s, p) => s + p.valor, 0);
-    const restante = pedidoObj.total - totalPago;
-    linhas.push("");
-    linhas.push(`*Pago:* ${formatarValor(totalPago)}`);
-    linhas.push(`*Restante:* ${formatarValor(Math.max(restante, 0))}`);
-  }
-
-  if (pedidoObj.observacoes) {
-    linhas.push("");
-    linhas.push(`*Obs:* ${pedidoObj.observacoes}`);
-  }
-
-  return encodeURIComponent(linhas.join("\n"));
+  
+  if (obs) msg += `*Obs:* ${obs}\n`;
+  
+  msg += `\n📄 *Link para Imprimir Cupom:*\n${linkMagico}`;
+  
+  return msg;
 }
 
 function enviarWhatsApp() {
-  const pacote = obterOuGerarPedidoComIds();
-  if (!pacote) return;
+  if (carrinho.length === 0) {
+    alert("O carrinho está vazio!");
+    return;
+  }
 
-  const numero = "551147464394";
-  const mensagem = montarMensagemWhatsApp(pacote.pedido);
-  const url = `https://wa.me/${numero}?text=${mensagem}`;
+  // Coleta dados
+  const dados = {
+    id: gerarIdUnico(),
+    dataHora: new Date().toLocaleString("pt-BR"),
+    cliente: document.getElementById("nome").value || "Não informado",
+    tipo: document.getElementById("tipo-atendimento").value,
+    endereco: document.getElementById("endereco").value || "",
+    obs: document.getElementById("observacoes").value || "",
+    carrinho: carrinho, 
+    pagamentos: pagamentos,
+    total: calcularTotalPedido()
+  };
 
+  const textoMensagem = montarTextoMensagem(dados);
+  
+  // AQUI ESTÁ A CORREÇÃO:
+  // Usamos encodeURIComponent em TUDO. Isso protege o # do ID e os caracteres do link.
+  const mensagemCodificada = encodeURIComponent(textoMensagem);
+  
+  const numero = "551147464394"; 
+  const url = `https://wa.me/${numero}?text=${mensagemCodificada}`;
   window.open(url, "_blank");
 }
 
-/* =========================
-   Impressão (recibo)
-   ========================= */
-
-function isEntrega(tipoAtendimento) {
-  const t = String(tipoAtendimento || "").toLowerCase();
-  return t.includes("entrega");
+function novoPedido() {
+  if (!confirm("Limpar tudo e iniciar novo pedido?")) return;
+  carrinho = [];
+  pagamentos = [];
+  renderCarrinho();
+  renderPagamentos();
+  document.getElementById("nome").value = "";
+  document.getElementById("endereco").value = "";
+  document.getElementById("observacoes").value = "";
+  document.getElementById("valor-pagamento").value = "";
 }
 
-function preencherRecibo(pedidoObj) {
-  document.getElementById("recibo-data").innerText = pedidoObj.createdAtLocal || new Date().toLocaleString("pt-BR");
-  document.getElementById("recibo-id").innerText = `PEDIDO #${pedidoObj.idCurto || "-----"}`;
+// --- FUNÇÃO DE IMPRESSÃO (Modo Lojista) ---
 
-  document.getElementById("recibo-nome").innerText = pedidoObj.cliente?.nome || "Consumidor";
-  document.getElementById("recibo-tipo-atendimento").innerText = pedidoObj.cliente?.tipoAtendimento || "N/A";
-
-  const linhaEndereco = document.getElementById("recibo-endereco-linha");
-  const spanEndereco = document.getElementById("recibo-endereco");
-  const tipo = pedidoObj.cliente?.tipoAtendimento || "";
-
-  if (isEntrega(tipo)) {
-    linhaEndereco.style.display = "";
-    spanEndereco.innerText = pedidoObj.cliente?.endereco || "Não informado";
-  } else {
-    linhaEndereco.style.display = "none";
-    spanEndereco.innerText = "";
-  }
-
+function prepararImpressao(dados) {
+  // Preenche o recibo oculto com os dados vindos do Link
+  document.getElementById("recibo-id").innerText = dados.id;
+  document.getElementById("recibo-data").innerText = dados.dataHora;
+  document.getElementById("recibo-nome").innerText = dados.cliente;
+  document.getElementById("recibo-tipo-atendimento").innerText = dados.tipo;
+  document.getElementById("recibo-endereco").innerText = dados.endereco || "N/A";
+  document.getElementById("recibo-obs").innerText = dados.obs || "-";
+  
+  // Itens
   const itensDiv = document.getElementById("recibo-itens-lista");
   itensDiv.innerHTML = "";
-
-  let total = 0;
-  (pedidoObj.itens || []).forEach(i => {
-    total += Number(i.subtotal || 0);
+  dados.carrinho.forEach(item => {
+    // Recalcula para exibição
+    const pUnit = precoUnitario(item.nome, item.quantidade); 
+    const sub = pUnit * item.quantidade;
+    const tipoPr = item.quantidade >= 5 ? "ATACADO" : "VAREJO";
+    
     const p = document.createElement("p");
-    p.textContent = `${i.quantidade}x ${i.nome} (${String(i.tipoPreco || "").toUpperCase()}) - ${formatarValor(Number(i.subtotal || 0))}`;
+    p.textContent = `${item.quantidade}x ${item.nome} (${tipoPr}) = ${formatarValor(sub)}`;
     itensDiv.appendChild(p);
   });
 
+  // Pagamentos
   const pagtosDiv = document.getElementById("recibo-pagamentos-lista");
   pagtosDiv.innerHTML = "";
+  let totalPago = 0;
+  dados.pagamentos.forEach(pg => {
+    totalPago += pg.valor;
+    const p = document.createElement("p");
+    p.textContent = `${pg.metodo}: ${formatarValor(pg.valor)}`;
+    pagtosDiv.appendChild(p);
+  });
 
-  if (pedidoObj.pagamentos && pedidoObj.pagamentos.length > 0) {
-    pedidoObj.pagamentos.forEach(pag => {
-      const linha = document.createElement("p");
-      linha.textContent = `${pag.metodo}: ${formatarValor(Number(pag.valor || 0))}`;
-      pagtosDiv.appendChild(linha);
-    });
+  // Resumo Pagamento
+  const restante = dados.total - totalPago;
+  const resumo = document.createElement("p");
+  resumo.style.fontWeight = "bold";
+  resumo.style.marginTop = "5px";
+  resumo.textContent = `Pago: ${formatarValor(totalPago)} | Resta: ${formatarValor(Math.max(0, restante))}`;
+  pagtosDiv.appendChild(resumo);
 
-    const totalPago = pedidoObj.pagamentos.reduce((s, p) => s + Number(p.valor || 0), 0);
-    const restante = (pedidoObj.total ?? total) - totalPago;
-
-    const resumo = document.createElement("p");
-    resumo.textContent = `Pago: ${formatarValor(totalPago)} | Restante: ${formatarValor(Math.max(restante, 0))}`;
-    pagtosDiv.appendChild(resumo);
-  } else {
-    const linha = document.createElement("p");
-    linha.textContent = "Não informado";
-    pagtosDiv.appendChild(linha);
-  }
-
-  const obsBox = document.getElementById("recibo-obs-box");
-  const obsSpan = document.getElementById("recibo-obs");
-  const obs = String(pedidoObj.observacoes || "").trim();
-  if (obs) {
-    obsBox.style.display = "";
-    obsSpan.innerText = obs;
-  } else {
-    obsBox.style.display = "none";
-    obsSpan.innerText = "";
-  }
-
-  document.getElementById("recibo-total").innerText = formatarValor(Number(pedidoObj.total ?? total ?? 0));
+  document.getElementById("recibo-total").innerText = formatarValor(dados.total);
 }
 
-function imprimirReciboAtual() {
-  if (!isModoAtendente()) {
-    alert("Impressão disponível somente no modo atendente.");
-    return;
-  }
-
-  const pacote = obterOuGerarPedidoComIds();
-  if (!pacote) return;
-
-  preencherRecibo(pacote.pedido);
-  window.print();
-}
-
-function carregarPedidoViaURL() {
-  const params = new URLSearchParams(window.location.search);
-  const printParam = params.get("print");
-
-  if (!printParam) return;
-
-  const pedidoObj = decodificarIdImpressao(printParam);
-  if (!pedidoObj) {
-    alert("Link de impressão inválido ou corrompido.");
-    return;
-  }
-
-  // Ativa modo atendente automaticamente (sem pedir PIN)
-  setModoAtendente(true);
-
-  // Preenche o carrinho e dados do cliente
-  carrinho = pedidoObj.itens.map(i => ({ nome: i.nome, quantidade: i.quantidade }));
-  pagamentos = pedidoObj.pagamentos.map(p => ({ metodo: p.metodo, valor: p.valor }));
-
-  document.getElementById("nome").value = pedidoObj.cliente?.nome || "";
-  document.getElementById("tipo-atendimento").value = pedidoObj.cliente?.tipoAtendimento || "Retirada no local";
-  document.getElementById("endereco").value = pedidoObj.cliente?.endereco || "";
-  document.getElementById("observacoes").value = pedidoObj.observacoes || "";
-
-  // Atualiza cache
-  cachePedidoAtual = {
-    fingerprint: fingerprintPedido(pedidoObj),
-    idCurto: pedidoObj.idCurto,
-    idImpressao: pedidoObj.idImpressao,
-    pedido: pedidoObj
-  };
-
-  renderCarrinho();
-  renderPagamentos();
-
-  // Preenche o recibo
-  preencherRecibo(pedidoObj);
-
-  alert("Pedido carregado! Clique em 'Imprimir Recibo' para imprimir.");
-}
-
-/* =========================
-   Novo pedido
-   ========================= */
-
-function novoPedido() {
-  if (!confirm("Iniciar um novo pedido? Isso vai limpar carrinho, pagamentos e dados do cliente.")) {
-    return;
-  }
-
-  carrinho = [];
-  pagamentos = [];
-  cachePedidoAtual = null;
-
-  renderCarrinho();
-  renderPagamentos();
-
-  document.getElementById("nome").value = "";
-  document.getElementById("tipo-atendimento").value = "Retirada no local";
-  document.getElementById("endereco").value = "";
-  document.getElementById("observacoes").value = "";
-
-  const valorPagto = document.getElementById("valor-pagamento");
-  if (valorPagto) valorPagto.value = "";
-}
+// --- INICIALIZAÇÃO ---
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderMenu();
-  renderCarrinho();
-  renderPagamentos();
+  // Verifica se tem dados na URL (Modo Impressão)
+  const params = new URLSearchParams(window.location.search);
+  const dadosHash = params.get("dado_pedido");
 
-  // Verifica se há parâmetro ?print= na URL
-  carregarPedidoViaURL();
+  if (dadosHash) {
+    // MODO IMPRESSÃO
+    modoImpressao = true;
+    const dadosPedido = decodificarPedido(dadosHash);
+    
+    if (dadosPedido) {
+      // Esconde app do cliente
+      document.getElementById("app-cliente").style.display = "none";
+      // Mostra painel de impressão
+      document.getElementById("painel-impressao").style.display = "flex";
+      
+      // Preenche o recibo
+      prepararImpressao(dadosPedido);
 
-  // Aplica modo atendente salvo (se não veio via URL)
-  if (!window.location.search.includes("print=")) {
-    setModoAtendente(isModoAtendente());
+      // Configura botão de imprimir
+      document.getElementById("btn-imprimir-painel").onclick = () => window.print();
+    } else {
+      alert("Erro ao ler dados do pedido. O link pode estar quebrado.");
+      window.location.href = window.location.pathname; // volta pro inicio limpo
+    }
+
+  } else {
+    // MODO CLIENTE NORMAL
+    renderMenu();
+    renderCarrinho();
+    renderPagamentos();
+
+    const btnAddPagto = document.getElementById("btn-add-pagamento");
+    if (btnAddPagto) btnAddPagto.addEventListener("click", adicionarPagamento);
+    
+    const btnEnviar = document.getElementById("btn-enviar");
+    if (btnEnviar) btnEnviar.addEventListener("click", enviarWhatsApp);
+    
+    const btnNovo = document.getElementById("btn-novo-pedido");
+    if (btnNovo) btnNovo.addEventListener("click", novoPedido);
   }
-
-  const btnAddPagto = document.getElementById("btn-add-pagamento");
-  if (btnAddPagto) btnAddPagto.addEventListener("click", adicionarPagamento);
-
-  const btnEnviar = document.getElementById("btn-enviar");
-  if (btnEnviar) btnEnviar.addEventListener("click", enviarWhatsApp);
-
-  const btnImprimir = document.getElementById("btn-imprimir");
-  if (btnImprimir) btnImprimir.addEventListener("click", imprimirReciboAtual);
-
-  const btnNovoPedido = document.getElementById("btn-novo-pedido");
-  if (btnNovoPedido) btnNovoPedido.addEventListener("click", novoPedido);
-
-  const btnAbrirAtendente = document.getElementById("btn-abrir-atendente");
-  if (btnAbrirAtendente) btnAbrirAtendente.addEventListener("click", abrirModoAtendente);
-
-  const btnSairAtendente = document.getElementById("btn-sair-atendente");
-  if (btnSairAtendente) btnSairAtendente.addEventListener("click", sairModoAtendente);
 });
