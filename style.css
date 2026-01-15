@@ -6,25 +6,12 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 .header-text h1 { font-size: 1.4rem; }
 .header-info { font-size: 0.8rem; opacity: 0.9; }
 
-.btn-link-atendente {
-  margin-top: 8px;
-  background: transparent;
-  border: none;
-  color: #143550;
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 0.85rem;
-  opacity: 0.85;
-}
-.btn-link-atendente:hover { opacity: 1; }
-
 .main-container { display: grid; grid-template-columns: 2fr 1.2fr; gap: 20px; padding: 20px; }
 @media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } }
 
 .menu-wrapper, .cart-wrapper { background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .section-title { font-size: 1.2rem; margin-bottom: 10px; }
 .section-subtitle { font-size: 0.85rem; margin-bottom: 10px; color: #555; }
-
 .menu-section { margin-bottom: 15px; border: 1px solid #ffd1ec; border-radius: 8px; padding: 10px; }
 .menu-section h3 { font-size: 1rem; margin-bottom: 8px; color: #ff5fa6; }
 .item { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 5px 0; align-items: center; font-size: 0.9rem; }
@@ -35,7 +22,6 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 .cart-row { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 5px; background: #f7fbff; margin-bottom: 4px; font-size: 0.9rem; border-radius: 4px; align-items: center; }
 .cart-row button { background: #143550; color: #fff; border: none; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
 .cart-row button:hover { background: #0d2538; }
-
 .cart-total-row { font-weight: bold; border-top: 2px solid #ff5fa6; padding-top: 10px; display: flex; justify-content: space-between; font-size: 1rem; }
 
 .pedido-form { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
@@ -46,15 +32,12 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 .pagamento-inputs { display: flex; gap: 5px; margin-bottom: 8px; }
 .pagamento-inputs select { flex: 2; font-size: 0.85rem; }
 .pagamento-inputs input { flex: 2; font-size: 0.85rem; }
-
 .btn-small { flex: 0.5; background: #143550; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1rem; }
 .btn-small:hover { background: #0d2538; }
-
 .lista-pagamentos { font-size: 0.85rem; }
 .pagamento-item { display: flex; justify-content: space-between; background: #fff; padding: 5px 8px; border-radius: 4px; margin-bottom: 3px; border: 1px solid #eee; }
 .btn-del { color: red; cursor: pointer; font-weight: bold; margin-left: 10px; }
 .btn-del:hover { color: darkred; }
-
 .pagamento-resumo { margin-top: 8px; padding: 5px; background: #e8f4ff; border-radius: 4px; font-weight: bold; font-size: 0.85rem; text-align: center; }
 
 .buttons-row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
@@ -65,58 +48,51 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 .btn-novo { background: #ff5fa6; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.9rem; }
 .btn-novo:hover { background: #e04a8f; }
 
-.btn-outline {
-  background: transparent;
-  color: #143550;
-  border: 2px solid #143550;
-  padding: 10px 12px;
-  border-radius: 25px;
-  font-weight: bold;
-  cursor: pointer;
-  flex: 1;
-  font-size: 0.9rem;
+/* Estilos para o painel de impressão (Visão do Lojista) */
+.painel-impressao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #143550;
+  padding: 20px;
 }
-.btn-outline:hover { background: #e8f4ff; }
-
-/* Somente atendente: escondido por padrão */
-.atendente-only { display: none; }
-body.modo-atendente .atendente-only { display: block; }
-
-/* Área "Modo Atendente Ativo" */
-.print-id-box {
-  margin-top: 12px;
-  background: #fdf8ff;
-  border: 1px solid #ffd1ec;
-  padding: 10px;
-  border-radius: 8px;
+.aviso-impressao {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
+.aviso-impressao h2 { color: #ff5fa6; margin-bottom: 10px; }
 
-/* RECIBO - 80mm com margem de segurança
-   Observação: a largura útil de muitas impressoras 80mm é ~72mm.
-   Por isso usamos width: 72mm e padding: 4mm (somando 80mm).
-*/
-.recibo {
-  display: none;
-  width: 72mm;
-  padding: 4mm;
-  font-family: monospace;
-  font-size: 11px;
-  line-height: 1.25;
-}
-.recibo-header h2 { font-size: 13px; text-align: center; margin-bottom: 2px; }
-.recibo-header p { text-align: center; margin: 1px 0; }
-.recibo-cliente p, .recibo-itens p, .recibo-pagamentos p, .recibo-total p, .recibo-rodape p, .recibo-obs p { margin: 2px 0; }
-.recibo-rodape { text-align: center; margin-top: 6px; }
+/* Configuração de Impressão 80mm */
+.recibo { display: none; }
 
 @media print {
   @page { margin: 0; }
   body * { visibility: hidden; }
+  #app-cliente, #painel-impressao { display: none !important; }
+  
   #recibo, #recibo * { visibility: visible; }
   #recibo {
     display: block;
     position: absolute;
     left: 0;
     top: 0;
+    /* 80mm de largura total, mas usamos um pouco menos para margem de segurança */
+    width: 76mm; 
+    padding: 2mm 2mm 5mm 2mm; /* Margem inferior maior para corte */
+    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada alinha melhor */
+    font-size: 11px;
+    color: #000;
   }
-  .header, .main-container { display: none !important; }
+  
+  .recibo-header h2 { font-size: 14px; text-align: center; margin-bottom: 5px; font-weight: bold; }
+  .recibo-header p, .recibo-rodape p { text-align: center; margin: 2px 0; }
+  .recibo-cliente p, .recibo-itens p, .recibo-pagamentos p, .recibo-total p { margin: 3px 0; }
+  
+  /* Linhas tracejadas */
+  .recibo p { white-space: pre-wrap; word-wrap: break-word; }
 }
