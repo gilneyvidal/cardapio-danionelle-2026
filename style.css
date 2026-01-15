@@ -48,16 +48,51 @@ body { font-family: sans-serif; background: #ffedf7; color: #143550; min-height:
 .btn-novo { background: #ff5fa6; color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.9rem; }
 .btn-novo:hover { background: #e04a8f; }
 
-.recibo { display: none; width: 58mm; font-family: monospace; font-size: 10px; padding: 2mm; }
-.recibo-header h2 { font-size: 12px; text-align: center; margin-bottom: 2px; }
-.recibo-header p { text-align: center; margin: 1px 0; }
-.recibo-cliente p, .recibo-itens p, .recibo-pagamentos p, .recibo-total p, .recibo-rodape p { margin: 2px 0; }
-.recibo-rodape { text-align: center; margin-top: 5px; }
+/* Estilos para o painel de impressão (Visão do Lojista) */
+.painel-impressao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #143550;
+  padding: 20px;
+}
+.aviso-impressao {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.aviso-impressao h2 { color: #ff5fa6; margin-bottom: 10px; }
+
+/* Configuração de Impressão 80mm */
+.recibo { display: none; }
 
 @media print {
   @page { margin: 0; }
   body * { visibility: hidden; }
+  #app-cliente, #painel-impressao { display: none !important; }
+  
   #recibo, #recibo * { visibility: visible; }
-  #recibo { display: block; position: absolute; left: 0; top: 0; width: 58mm; padding: 2mm; }
-  .header, .main-container { display: none !important; }
+  #recibo {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    /* 80mm de largura total, mas usamos um pouco menos para margem de segurança */
+    width: 76mm; 
+    padding: 2mm 2mm 5mm 2mm; /* Margem inferior maior para corte */
+    font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada alinha melhor */
+    font-size: 11px;
+    color: #000;
+  }
+  
+  .recibo-header h2 { font-size: 14px; text-align: center; margin-bottom: 5px; font-weight: bold; }
+  .recibo-header p, .recibo-rodape p { text-align: center; margin: 2px 0; }
+  .recibo-cliente p, .recibo-itens p, .recibo-pagamentos p, .recibo-total p { margin: 3px 0; }
+  
+  /* Linhas tracejadas */
+  .recibo p { white-space: pre-wrap; word-wrap: break-word; }
 }
